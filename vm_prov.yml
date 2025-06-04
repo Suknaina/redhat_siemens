@@ -1,7 +1,4 @@
 - name: Create VM
   hosts: localhost
-  gather_facts: no
-  vars:
-    user: "{{ lookup('env','USER') }}"
   roles:
     - vm_provision
