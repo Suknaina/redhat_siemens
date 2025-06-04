@@ -1,6 +1,6 @@
 ---
 - name: Create VirtualMachine from existing DataVolume
-  k8s:
+  kubernetes.core.k8s:
     state: present
     definition:
       apiVersion: kubevirt.io/v1
