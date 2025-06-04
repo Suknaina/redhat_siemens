@@ -1,4 +1,7 @@
 - name: Create VM
   hosts: localhost
+  gather_fcts: no
+  vars:
+    user: "{{ lookup('env','USER') }}"
   roles:
     - vm_provision
