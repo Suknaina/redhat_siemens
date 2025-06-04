@@ -1,7 +1,7 @@
 ---
 # tasks file for vm_provision
 - name: Include tasks to create VM from datavolume
-  inslude_tasks: datavolume.yml
+  include_tasks: datavolume.yml
   when: creation_type == 'datavolume'
 
 - name: Include tasks to create VM from template
