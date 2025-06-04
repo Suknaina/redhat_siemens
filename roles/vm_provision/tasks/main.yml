@@ -3,3 +3,7 @@
 - name: Include tasks to create VM from datavolume
   inslude_tasks: datavolume.yml
   when: creation_type == 'datavolume'
+
+- name: Include tasks to create VM from template
+  include_tasks: template.yml
+  when: creation_type == 'template'
