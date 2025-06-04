@@ -9,6 +9,6 @@
   when: creation_type == 'template'
 
 - debug:
-    msg: "{{ user }}"
+    msg: "{{ launched_by }}"
 
 
