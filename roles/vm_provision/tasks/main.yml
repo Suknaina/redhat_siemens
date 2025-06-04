@@ -9,7 +9,6 @@
   when: creation_type == 'template'
 
 - name: Show who launched the job
-  debug:
-    msg: "Job launched by: {{ launched_by }}"
+  include_tasks: job_launched_username.yml
 
 
