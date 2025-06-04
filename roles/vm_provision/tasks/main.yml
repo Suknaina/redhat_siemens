@@ -10,5 +10,4 @@
 
 - name: Username who launched the template
   debug: 
-    msg: launched_by: "{{ tower_user.username }}"
-
+    msg: "launched_by: {{ tower_user.username }}"
