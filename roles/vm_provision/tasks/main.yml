@@ -8,7 +8,8 @@
   include_tasks: template.yml
   when: creation_type == 'template'
 
-- name: Get username who launched the job
+- name: Show who launched the job
   debug:
-    msg: "Job launched by: {{ lookup('env', 'AWX_USER_NAME') }}"
+    msg: "Job launched by: {{ launched_by }}"
+
 
