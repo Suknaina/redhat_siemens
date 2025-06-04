@@ -1,109 +1,31 @@
 ---
-- name: Create VirtualMachine in the given namespace
-  kubernetes.core.k8s:
+- name: Create VirtualMachine from existing DataVolume
+  k8s:
     state: present
     definition:
       apiVersion: kubevirt.io/v1
       kind: VirtualMachine
       metadata:
-        name: "{{ vm_name }}"
-        namespace: "{{ project_name }}"
-        labels:
-          app: rhel-9.2
-          kubevirt.io/dynamic-credentials-support: 'true'
-          vm.kubevirt.io/template: rhel9-server-small
-          vm.kubevirt.io/template.namespace: openshift
-          vm.kubevirt.io/template.revision: '1'
-          vm.kubevirt.io/template.version: v0.29.4
+        name: vm-from-rhel-9-2
+        namespace: default
       spec:
-        running: true
-        dataVolumeTemplates:
-          - metadata:
-              name: "{{ vm_name }}-rootdisk"
-              annotations:
-                cdi.kubevirt.io/storage.bind.immediate.requested: 'true'
-            spec:
-              source:
-                blank: {}
-              storage:
-                resources:
-                  requests:
-                    storage: "{{ root_disk_size }}Gi"
-          - metadata:
-              name: "{{ vm_name }}-cdrom"
-            spec:
-              source:
-                blank: {}
-              storage:
-                resources:
-                  requests:
-                    storage: 15Gi
+        running: false
         template:
           metadata:
-            annotations:
-              vm.kubevirt.io/flavor: small
-              vm.kubevirt.io/os: rhel9
-              vm.kubevirt.io/workload: server
+            labels:
+              kubevirt.io/domain: vm-from-rhel-9-2
           spec:
             domain:
-              cpu:
-                cores: "{{ cpu_cores }}"
-                sockets: 1
-                threads: 1
-              memory:
-                guest: "{{ memory }}Gi"
               devices:
                 disks:
                   - name: rootdisk
-                    bootOrder: 1
                     disk:
                       bus: virtio
-                  - name: cdrom
-                    disk:
-                      bus: virtio
-                  - name: cloudinitdisk
-                    bootOrder: 2
-                    disk:
-                      bus: virtio
-                interfaces:
-                  - name: default
-                    model: virtio
-                    masquerade: {}
-              features:
-                acpi: {}
-                smm:
-                  enabled: true
-              firmware:
-                bootloader:
-                  efi: {}
-              machine:
-                type: pc-q35-rhel9.4.0
-            networks:
-              - name: default
-                pod: {}
-            terminationGracePeriodSeconds: 180
+              resources:
+                requests:
+                  memory: 2Gi
+                  cpu: "2"
             volumes:
               - name: rootdisk
                 dataVolume:
-                  name: "{{ vm_name }}-rootdisk"
-              - name: cdrom
-                dataVolume:
-                  name: "{{ vm_name }}-cdrom"
-              - name: cloudinitdisk
-                cloudInitNoCloud:
-                  userData: |
-                    #cloud-config
-                    user: admin
-                    password: int123
-                    chpasswd: { expire: False }
-
-- name: Wait for virtual machine IP to be populated
-  kubernetes.core.k8s_info:
-    api_version: kubevirt.io/v1
-    kind: VirtualMachineInstance
-    name: "{{ vm_name }}"
-    namespace: "{{ project_name }}"
-  register: vmi
-  retries: 60
-  delay: 10
-  until: (vmi.resources[0].status.interfaces[0]['ipAddress'] | default('')) | length > 0
+                  name: rhel-9-2
