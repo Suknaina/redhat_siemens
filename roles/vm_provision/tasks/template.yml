@@ -1,0 +1,104 @@
+---
+- name: Create or update VirtualMachine
+  kubernetes.core.k8s:
+    state: present
+    definition: |
+      apiVersion: kubevirt.io/v1
+      kind: VirtualMachine
+      metadata:
+        name: rhel9-testing2
+        namespace: aap-poc
+        labels:
+          app: rhel9-testing2
+          kubevirt.io/dynamic-credentials-support: 'true'
+          vm.kubevirt.io/template: rhel9-server-small
+          vm.kubevirt.io/template.namespace: openshift
+          vm.kubevirt.io/template.revision: '1'
+          vm.kubevirt.io/template.version: v0.29.4
+        annotations:
+          kubevirt.io/latest-observed-api-version: v1
+          kubevirt.io/storage-observed-api-version: v1
+          vm.kubevirt.io/validations: |
+            [
+              {
+                "name": "minimal-required-memory",
+                "path": "jsonpath::.spec.domain.memory.guest",
+                "rule": "integer",
+                "message": "This VM requires more memory.",
+                "min": 1610612736
+              }
+            ]
+      spec:
+        running: true
+        dataVolumeTemplates:
+          - apiVersion: cdi.kubevirt.io/v1beta1
+            kind: DataVolume
+            metadata:
+              name: rhel9-testing2
+            spec:
+              sourceRef:
+                kind: DataSource
+                name: rhel9
+                namespace: openshift-virtualization-os-images
+              storage:
+                resources:
+                  requests:
+                    storage: 30Gi
+        template:
+          metadata:
+            annotations:
+              vm.kubevirt.io/flavor: small
+              vm.kubevirt.io/os: rhel9
+              vm.kubevirt.io/workload: server
+            labels:
+              kubevirt.io/domain: rhel9-testing2
+              kubevirt.io/size: small
+              network.kubevirt.io/headlessService: headless
+          spec:
+            architecture: amd64
+            domain:
+              cpu:
+                cores: 1
+                sockets: 1
+                threads: 1
+              memory:
+                guest: 2Gi
+              devices:
+                disks:
+                  - name: rootdisk
+                    disk:
+                      bus: virtio
+                  - name: cloudinitdisk
+                    disk:
+                      bus: virtio
+                interfaces:
+                  - name: default
+                    model: virtio
+                    macAddress: '02:f8:10:00:00:29'
+                    masquerade: {}
+                rng: {}
+                logSerialConsole: false
+              features:
+                acpi: {}
+                smm:
+                  enabled: true
+              firmware:
+                bootloader:
+                  efi: {}
+              machine:
+                type: pc-q35-rhel9.4.0
+            networks:
+              - name: default
+                pod: {}
+            terminationGracePeriodSeconds: 180
+            volumes:
+              - name: rootdisk
+                dataVolume:
+                  name: rhel9-testing2
+              - name: cloudinitdisk
+                cloudInitNoCloud:
+                  userData: |
+                    #cloud-config
+                    user: cloud-user
+                    password: m54t-n83t-rim6
+                    chpasswd: { expire: False }
