@@ -1,0 +1,14 @@
+- name: Get user details from AAP API
+  uri:
+    url: "https://aap-platform-aap.apps.ocp4.imss.work/api/controller/v2/users/?username={{ launched_by }}"
+    method: GET
+    user: "{{ username }}"
+    password: "{{ password }}"
+    force_basic_auth: yes
+    validate_certs: no
+    return_content: yes
+  register: user_info
+
+- name: Set email fact
+  set_fact:
+    user_email: "{{ user_info.json.results[0].email }}"
