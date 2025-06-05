@@ -1,5 +1,8 @@
 ---
 # tasks file for vm_provision
+- name: include cred file
+  include_vars: admin_creds.yml
+  
 - name: Include tasks to create VM from datavolume
   include_tasks: datavolume.yml
   when: creation_type == 'datavolume'
