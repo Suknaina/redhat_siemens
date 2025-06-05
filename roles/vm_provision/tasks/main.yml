@@ -11,9 +11,6 @@
   include_tasks: template.yml
   when: creation_type == 'template'
 
-- debug:
-    msg: "{{ launched_by }}"
-
 - name: Include tasks to get launched users details
   include_tasks: user_details.yml
 
