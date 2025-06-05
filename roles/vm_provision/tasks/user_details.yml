@@ -13,5 +13,6 @@
   register: user_info
 
 - name: Set email fact
-  var:
-    user_email: "{{ user_info.json.results[0].email }}"
+  debug:
+    msg: "user_email: {{ user_info.json.results[0].email }}"
+
