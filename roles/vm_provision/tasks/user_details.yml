@@ -14,5 +14,5 @@
 
 - name: Set email fact
   debug:
-    msg: "user_email: {{ user_info.json.results[0].email }} and User UUID is {{ (user_response.json.summary_fields.resource.ansible_id) }}"
+    msg: "user_email: {{ user_info.json.results[0].email }} and User UUID is {{ (user_info.json.summary_fields.resource.ansible_id) }}"
 
