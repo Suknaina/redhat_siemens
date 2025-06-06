@@ -11,8 +11,13 @@
   include_tasks: template.yml
   when: creation_type == 'template'
 
-- name: Include tasks to create VM from url
-  include_tasks: url_method.yml
+- name: Create VM using url
+  block:
+    - name: Include tasks to create VM from url
+      include_tasks: url_method.yml
+
+    - name: include vars for url method
+      include_vars: url_vars.yml
   when: creation_type == 'url'
 
 - name: Include tasks to get launched users details
