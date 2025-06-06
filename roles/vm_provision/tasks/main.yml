@@ -13,11 +13,12 @@
 
 - name: Create VM using url
   block:
-    - name: Include tasks to create VM from url
-      include_tasks: url_method.yml
-
     - name: include vars for url method
       include_vars: url_vars.yml
+      
+    - name: Include tasks to create VM from url
+      include_tasks: url_method.yml
+      
   when: creation_type == 'url'
 
 - name: Include tasks to get launched users details
