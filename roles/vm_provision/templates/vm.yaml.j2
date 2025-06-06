@@ -1,0 +1,49 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: {{ vm_name }}
+  namespace: {{ namespace }}
+spec:
+  running: false
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: {{ vm_name }}
+    spec:
+      domain:
+        cpu:
+          cores: {{ vm_cpu_cores }}
+        resources:
+          requests:
+            memory: {{ vm_memory }}
+        devices:
+          disks:
+            - name: bootdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+      volumes:
+        - name: bootdisk
+          dataVolume:
+            name: {{ vm_name }}-dv
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              password: {{ cloud_init_password }}
+              chpasswd: { expire: False }
+              ssh_pwauth: True
+  dataVolumeTemplates:
+    - metadata:
+        name: {{ vm_name }}-dv
+      spec:
+        source:
+          http:
+            url: {{ image_url }}
+        storage:
+          resources:
+            requests:
+              storage: {{ vm_disk_size }}
+
