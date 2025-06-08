@@ -10,6 +10,10 @@
       {% elif attribute_choice_normalized == 'network' %}Network
       {% else %}{{ attribute_choice | trim }}{% endif %}
 
+- name: Final strip of attribute_name to remove any hidden whitespace
+  set_fact:
+    attribute_name: "{{ attribute_name | trim }}"
+
 - name: Debug attribute_name
   debug:
     var: attribute_name
