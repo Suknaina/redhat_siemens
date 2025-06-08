@@ -1,30 +1,44 @@
-- name: Validate attribute choice
-  assert:
-    that:
-      - attribute_choice in ['1', '2', '3']
-    fail_msg: "Invalid choice '{{ attribute_choice }}'. Please enter 1, 2, or 3."
-
-- name: Map choice to attribute_name
+- name: Map choice to attribute_name (optional if you use dropdown directly)
   set_fact:
-    attribute_name: >
-      {% if attribute_choice == '1' %}BG
+    attribute_name: >-
+      {% if attribute_choice == '1' %}Business Group
       {% elif attribute_choice == '2' %}Location
       {% elif attribute_choice == '3' %}Network
-      {% endif %}
+      {% else %}{{ attribute_choice }}{% endif %}
 
-- name: Initialize values list
+- name: Parse values_string into list
   set_fact:
-    values_list: []
+    values_list: "{{ values_string.split(',') | map('trim') | list }}"
 
-- name: Prompt for attribute values
-  pause:
-    prompt: "Enter value {{ item + 1 }} for attribute '{{ attribute_name }}'"
-  loop: "{{ range(0, num_values | int) }}"
-  register: entered_values
-  delegate_to: localhost
-
-- name: Build values_list from entered inputs
+- name: Initialize row values dict with empty strings
   set_fact:
-    values_list: "{{ values_list + [item.user_input] }}"
-  loop: "{{ entered_values.results }}"
+    row_values:
+      Business Group: ""
+      Location: ""
+      Network: ""
+      User name: "{{ username }}"
+      User mail: "{{ usermail }}"
+
+- name: Insert values into the correct attribute key
+  set_fact:
+    row_values: >-
+      {{
+        row_values.update({ attribute_name: values_list | join(';') }) or row_values
+      }}
+
+- name: Format CSV line string
+  set_fact:
+    new_csv_line: "{{ row_values['Business Group'] }},{{ row_values['Location'] }},{{ row_values['Network'] }},{{ row_values['User name'] }},{{ row_values['User mail'] }}"
+
+- name: Ensure CSV file exists with correct header
+  lineinfile:
+    path: "/tmp/attribute_values.csv"
+    line: "Business Group,Location,Network,User name,User mail"
+    create: yes
+
+- name: Append new CSV line to CSV file
+  lineinfile:
+    path: "/tmp/attribute_values.csv"
+    line: "{{ new_csv_line }}"
+    insertafter: EOF
 
