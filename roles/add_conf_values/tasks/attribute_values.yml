@@ -20,7 +20,7 @@
 
 - name: Normalize values_string (handle newline-separated input)
   set_fact:
-    values_string_normalized: "{{ values_string | replace('\n', ',') | join('')}}"
+    values_string_normalized: "{{ values_string | replace('\n', ',') }}"
 
 - name: Parse normalized values_string into list
   set_fact:
@@ -28,7 +28,7 @@
 
 - name: Debug values_list
   debug:
-    var: values_list
+    msg: "{{values_list | join('')}}"
 
 - name: Include user detail tasks
   include_role:
