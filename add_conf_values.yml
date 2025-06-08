@@ -1,5 +1,21 @@
----
 - name: Add new attribute values for user form
   hosts: localhost
+  gather_facts: false
+
+  vars_prompt:
+    - name: attribute_choice
+      prompt: |
+        Which attribute do you want to update?
+        1. Business Group
+        2. Location (Cluster name)
+        3. Network
+        Enter choice number (1-3)
+      private: no
+
+    - name: num_values
+      prompt: "How many values do you want to add?"
+      private: no
+
   roles:
     - add_conf_values
+

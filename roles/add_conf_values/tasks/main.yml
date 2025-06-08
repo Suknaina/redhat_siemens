@@ -1,29 +1,6 @@
 ---
-# tasks file for add_conf_values
-- name: Prompt for attribute name
-  vars_prompt:
-    - name: attribute_name
-      prompt: "Enter the attribute to update"
-      private: no
-      choices: "{{ valid_attributes }}"
+- name: Get values from user
+  include_tasks: attribute_values.yml
 
-- name: Prompt for number of values
-  vars_prompt:
-    - name: num_values
-      prompt: "How many values do you want to add?"
-      private: no
-
-- name: Prompt for attribute values
-  pause:
-    prompt: "Enter value {{ item + 1 }} for attribute '{{ attribute_name }}'"
-  loop: "{{ range(0, num_values | int) }}"
-  register: entered_values
-  delegate_to: localhost
-
-- name: Build values list from input
-  set_fact:
-    values_list: "{{ values_list | default([]) + [item.user_input] }}"
-  loop: "{{ entered_values.results }}"
-
-- debug:
-    msg: "{{ values_list }}"
+- name: Add values to the file and update to git
+  include_tasks: file_update.yml

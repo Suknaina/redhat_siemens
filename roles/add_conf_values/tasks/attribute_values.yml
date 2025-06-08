@@ -1,0 +1,30 @@
+- name: Validate attribute choice
+  assert:
+    that:
+      - attribute_choice in ['1', '2', '3']
+    fail_msg: "Invalid choice '{{ attribute_choice }}'. Please enter 1, 2, or 3."
+
+- name: Map choice to attribute_name
+  set_fact:
+    attribute_name: >
+      {% if attribute_choice == '1' %}BG
+      {% elif attribute_choice == '2' %}Location
+      {% elif attribute_choice == '3' %}Network
+      {% endif %}
+
+- name: Initialize values list
+  set_fact:
+    values_list: []
+
+- name: Prompt for attribute values
+  pause:
+    prompt: "Enter value {{ item + 1 }} for attribute '{{ attribute_name }}'"
+  loop: "{{ range(0, num_values | int) }}"
+  register: entered_values
+  delegate_to: localhost
+
+- name: Build values_list from entered inputs
+  set_fact:
+    values_list: "{{ values_list + [item.user_input] }}"
+  loop: "{{ entered_values.results }}"
+
