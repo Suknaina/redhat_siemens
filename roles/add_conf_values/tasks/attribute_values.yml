@@ -1,14 +1,15 @@
 - name: Map choice to attribute_name (optional if you use dropdown directly)
   set_fact:
     attribute_name: >-
-      {% if attribute_choice == 'Business Group' %}Business Group
-      {% elif attribute_choice == 'Location' %}Location
-      {% elif attribute_choice == 'Network' %}Network
-      {% else %}{{ attribute_choice }}{% endif %}
+      {% set choice = attribute_choice.strip() %}
+      {% if choice == 'Business Group' %}Business Group
+      {% elif choice == 'Location' %}Location
+      {% elif choice == 'Network' %}Network
+      {% else %}{{ choice }}{% endif %}
 
 - name: Parse values_string into list
   set_fact:
-    values_list: "{{ values_string.split(',') | map('trim') | list }}"
+    values_list: "{{ values_string.split(',') | map('trim') | reject('equalto', '') | list }}"
 
 - name: Include user detail tasks
   include_role:
@@ -28,7 +29,7 @@
   set_fact:
     row_values: >-
       {{
-        row_values.update({ attribute_name: values_list | join(';') }) or row_values
+        row_values.update({ (attribute_name | trim): values_list | join(';') }) or row_values
       }}
 
 - name: Format CSV line string
@@ -54,5 +55,3 @@
     src: /tmp/attribute_values.csv
     dest: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/attribute_values.csv"
     remote_src: yes
-
-
