@@ -49,11 +49,10 @@
     row_values: >-
       {{
         row_values | combine({
-          (attribute_name | string): values_list
-            | map('regex_replace', '^(.*)$', "'\\1'")
-            | join('')
+          (attribute_name | string): values_list | map('regex_replace', '^(.*)$', "'\\1'") | join('')
         })
       }}
+
 
 - name: Debug row_values
   debug:
