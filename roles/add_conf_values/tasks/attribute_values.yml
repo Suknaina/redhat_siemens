@@ -10,9 +10,13 @@
       {% elif attribute_choice_trimmed == 'Network' %}Network
       {% else %}{{ attribute_choice_trimmed }}{% endif %}
 
-- name: Parse values_string into list
+- name: Normalize values_string (handle newline-separated input)
   set_fact:
-    values_list: "{{ values_string.split(',') | map('trim') | list }}"
+    values_string_normalized: "{{ values_string | replace('\n', ',') }}"
+
+- name: Parse normalized values_string into list
+  set_fact:
+    values_list: "{{ values_string_normalized.split(',') | map('trim') | list }}"
 
 - name: Include user detail tasks
   include_role:
@@ -52,9 +56,3 @@
     path: "/tmp/attribute_values.csv"
     line: "{{ new_csv_line }}"
     insertafter: EOF
-
-- name: Move CSV file to Git repo before commit
-  copy:
-    src: /tmp/attribute_values.csv
-    dest: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/attribute_values.csv"
-    remote_src: yes
