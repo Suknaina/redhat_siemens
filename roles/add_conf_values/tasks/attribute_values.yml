@@ -47,3 +47,14 @@
     line: "{{ new_csv_line }}"
     insertafter: EOF
 
+- name: Write attribute CSV to temporary location
+  copy:
+    content: "{{ new_csv_line }}"
+    dest: "/tmp/attribute_values.csv"
+
+- name: Move to Git repo before commit
+  copy:
+    src: /tmp/attribute_values.csv
+    dest: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/attribute_values.csv"
+
+
