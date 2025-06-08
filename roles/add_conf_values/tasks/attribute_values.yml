@@ -1,14 +1,14 @@
-- name: Trim attribute_choice
+- name: Normalize attribute_choice
   set_fact:
-    attribute_choice_trimmed: "{{ attribute_choice | trim }}"
+    attribute_choice_normalized: "{{ attribute_choice | trim | lower }}"
 
-- name: Map choice to attribute_name (using trimmed attribute_choice)
+- name: Map normalized choice to proper attribute_name
   set_fact:
     attribute_name: >-
-      {% if attribute_choice_trimmed == 'Business Group' %}Business Group
-      {% elif attribute_choice_trimmed == 'Location' %}Location
-      {% elif attribute_choice_trimmed == 'Network' %}Network
-      {% else %}{{ attribute_choice_trimmed }}{% endif %}
+      {% if attribute_choice_normalized == 'business group' %}Business Group
+      {% elif attribute_choice_normalized == 'location' %}Location
+      {% elif attribute_choice_normalized == 'network' %}Network
+      {% else %}{{ attribute_choice | trim }}{% endif %}
 
 - name: Debug attribute_name
   debug:
@@ -65,9 +65,3 @@
     path: "/tmp/attribute_values.csv"
     line: "{{ new_csv_line }}"
     insertafter: EOF
-
-- name: Move CSV file to Git repo before commit
-  copy:
-    src: /tmp/attribute_values.csv
-    dest: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/attribute_values.csv"
-    remote_src: yes
