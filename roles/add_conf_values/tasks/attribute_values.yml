@@ -41,12 +41,6 @@
     line: "Business Group,Location,Network,User name,User mail"
     create: yes
 
-- name: Append new CSV line to CSV file
-  lineinfile:
-    path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files"
-    line: "{{ new_csv_line }}"
-    insertafter: EOF
-
 - name: Write attribute CSV to temporary location
   copy:
     content: "{{ new_csv_line }}"
