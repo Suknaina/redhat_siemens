@@ -1,0 +1,5 @@
+---
+- name: Add new attribute values for user form
+  hosts: localhost
+  roles:
+    - add_conf_values
