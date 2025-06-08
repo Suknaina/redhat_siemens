@@ -1,15 +1,14 @@
 - name: Map choice to attribute_name (optional if you use dropdown directly)
   set_fact:
     attribute_name: >-
-      {% set choice = attribute_choice.strip() %}
-      {% if choice == 'Business Group' %}Business Group
-      {% elif choice == 'Location' %}Location
-      {% elif choice == 'Network' %}Network
-      {% else %}{{ choice }}{% endif %}
+      {% if attribute_choice == 'Business Group' %}Business Group
+      {% elif attribute_choice == 'Location' %}Location
+      {% elif attribute_choice == 'Network' %}Network
+      {% else %}{{ attribute_choice }}{% endif %}
 
-- name: Parse values_string into list
+- name: Parse values_string into list (split on newlines, trim, remove empty)
   set_fact:
-    values_list: "{{ values_string.split(',') | map('trim') | reject('equalto', '') | list }}"
+    values_list: "{{ values_string.splitlines() | map('trim') | reject('equalto', '') | list }}"
 
 - name: Include user detail tasks
   include_role:
@@ -25,11 +24,11 @@
       User name: "{{ launched_by }}"
       User mail: "{{ user_email }}"
 
-- name: Insert values into the correct attribute key
+- name: Insert values into the correct attribute key (join list with ;)
   set_fact:
     row_values: >-
       {{
-        row_values.update({ (attribute_name | trim): values_list | join(';') }) or row_values
+        row_values.update({ attribute_name: values_list | join(';') }) or row_values
       }}
 
 - name: Format CSV line string
