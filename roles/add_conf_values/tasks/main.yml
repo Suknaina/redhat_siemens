@@ -2,5 +2,3 @@
 - name: Get values from user
   include_tasks: attribute_values.yml
 
-- name: Add values to the file and update to git
-  include_tasks: file_update.yml
