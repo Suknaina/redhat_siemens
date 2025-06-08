@@ -1,14 +1,18 @@
-- name: Map choice to attribute_name (optional if you use dropdown directly)
+- name: Trim attribute_choice
+  set_fact:
+    attribute_choice_trimmed: "{{ attribute_choice | trim }}"
+
+- name: Map choice to attribute_name (using trimmed attribute_choice)
   set_fact:
     attribute_name: >-
-      {% if attribute_choice == 'Business Group' %}Business Group
-      {% elif attribute_choice == 'Location' %}Location
-      {% elif attribute_choice == 'Network' %}Network
-      {% else %}{{ attribute_choice }}{% endif %}
+      {% if attribute_choice_trimmed == 'Business Group' %}Business Group
+      {% elif attribute_choice_trimmed == 'Location' %}Location
+      {% elif attribute_choice_trimmed == 'Network' %}Network
+      {% else %}{{ attribute_choice_trimmed }}{% endif %}
 
-- name: Parse values_string into list (split on newlines, trim, remove empty)
+- name: Parse values_string into list
   set_fact:
-    values_list: "{{ values_string.splitlines() | map('trim') | reject('equalto', '') | list }}"
+    values_list: "{{ values_string.split(',') | map('trim') | list }}"
 
 - name: Include user detail tasks
   include_role:
@@ -24,7 +28,7 @@
       User name: "{{ launched_by }}"
       User mail: "{{ user_email }}"
 
-- name: Insert values into the correct attribute key (join list with ;)
+- name: Insert values into the correct attribute key
   set_fact:
     row_values: >-
       {{
