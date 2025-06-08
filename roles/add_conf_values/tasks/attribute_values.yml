@@ -1,14 +1,19 @@
 - name: Map choice to attribute_name (optional if you use dropdown directly)
   set_fact:
     attribute_name: >-
-      {% if attribute_choice == '1' %}Business Group
-      {% elif attribute_choice == '2' %}Location
-      {% elif attribute_choice == '3' %}Network
+      {% if attribute_choice == 'Business Group' %}Business Group
+      {% elif attribute_choice == 'Location' %}Location
+      {% elif attribute_choice == 'Network' %}Network
       {% else %}{{ attribute_choice }}{% endif %}
 
 - name: Parse values_string into list
   set_fact:
     values_list: "{{ values_string.split(',') | map('trim') | list }}"
+
+- name: Include user detail tasks
+  include_role:
+    name: vm_provision
+    tasks_from: user_details.yml
 
 - name: Initialize row values dict with empty strings
   set_fact:
@@ -16,8 +21,8 @@
       Business Group: ""
       Location: ""
       Network: ""
-      User name: "{{ username }}"
-      User mail: "{{ usermail }}"
+      User name: "{{ launched_by }}"
+      User mail: "{{ user_email }}"
 
 - name: Insert values into the correct attribute key
   set_fact:
