@@ -1,3 +1,7 @@
+- name: Set user name fact
+  set_fact:
+    launched_by: '{{  tower_user_name }}'
+    
 - debug:
     msg: "{{ launched_by }}"
     
