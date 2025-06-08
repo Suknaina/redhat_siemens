@@ -12,6 +12,11 @@
     return_content: yes
   register: user_info
 
+- name: set facts values
+  set_fact:
+    user_email: "{{ user_info.json.results[0].email }}"
+    user_name: "{{ launched_by }}"
+
 - name: Set email fact
   debug:
     msg: "user_email: {{ user_info.json.results[0].email }} and User UUID is {{ user_info.json.results[0].summary_fields.resource.ansible_id }}"
