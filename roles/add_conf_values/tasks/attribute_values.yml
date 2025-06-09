@@ -45,9 +45,10 @@
     row_values: >-
       {{
         row_values | combine({
-          attribute_name: values_list | map("format", "'{}'") | join('')
+          attribute_name: values_list | map('string') | map('regex_replace', '^', "'") | map('regex_replace', '$', "'") | join('')
         })
       }}
+
 
 - name: Debug row_values
   debug:
