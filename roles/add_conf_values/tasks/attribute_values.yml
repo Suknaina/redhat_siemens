@@ -60,7 +60,7 @@
   become: yes
   lineinfile:
     path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/attribute_values_report.csv"
-    line: "Business Group,Location,Network,User name,User mail"
+    line: "Business Group,Location,Network,User name,User mail,Date"
     create: yes
     state: present
     insertafter: BOF
