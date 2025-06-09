@@ -28,8 +28,7 @@
     tasks_from: user_details.yml
 
 - name: Read existing attribute values from YAML file
-  ansible.builtin.slurp:
-    path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/{{ attribute_name | lower | replace(' ', '_') }}.yml"
+ command: cat /var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/network.yml
   register: attribute_file_content
   failed_when: attribute_file_content is failed
 
