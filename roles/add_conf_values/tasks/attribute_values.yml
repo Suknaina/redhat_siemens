@@ -18,6 +18,9 @@
   set_fact:
     values_string_normalized: "{{ values_string | replace('\n', ',') }}"
 
+- name: Include tasks to fail if value exists
+  include_tasks: fail_value_exists.yml
+
 - name: Parse normalized values_string into list
   set_fact:
     values_list: "{{ values_string_normalized.split(',') | map('trim') | list }}"
@@ -65,7 +68,3 @@
     path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/attribute_values_report.csv"
     line: "{{ new_csv_line }}"
     insertafter: EOF
-
-
-#- name: Include tasks to fail if value exists
-#  include_tasks: fail_value_exists.yml
