@@ -1,3 +1,12 @@
+- name: Ensure CSV file exists with header
+  become: yes
+  lineinfile:
+    path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/attribute_values_report.csv"
+    line: "Business Group,Location,Network,User name,User mail"
+    create: yes
+    state: present
+    insertafter: BOF
+    
 - name: Normalize attribute_choice
   set_fact:
     attribute_choice_normalized: "{{ attribute_choice | trim | lower }}"
@@ -74,15 +83,6 @@
 - name: Format CSV line string
   set_fact:
     new_csv_line: "{{ row_values['Business Group'] }},{{ row_values['Location'] }},{{ row_values['Network'] }},{{ row_values['User name'] }},{{ row_values['User mail'] }}"
-
-- name: Ensure CSV file exists with header
-  become: yes
-  lineinfile:
-    path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/attribute_values_report.csv"
-    line: "Business Group,Location,Network,User name,User mail"
-    create: yes
-    state: present
-    insertafter: BOF
 
 - name: Append new CSV line to CSV file
   become: yes
