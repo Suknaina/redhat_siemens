@@ -1,0 +1,15 @@
+- name: Normalize attribute_choice
+  set_fact:
+    attribute_choice_normalized: "{{ attribute_choice | trim | lower }}"
+
+- name: Map normalized choice to proper attribute_name
+  set_fact:
+    attribute_name: "{{ attribute_choices_map[attribute_choice_normalized] | default(attribute_choice | trim) }}"
+
+- name: Final strip of attribute_name
+  set_fact:
+    attribute_name: "{{ attribute_name | trim }}"
+
+- name: Normalize values_string (handle newline-separated input)
+  set_fact:
+    values_string_normalized: "{{ values_string | replace('\n', ',') }}"
