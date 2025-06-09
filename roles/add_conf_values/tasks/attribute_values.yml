@@ -46,21 +46,20 @@
 
 - name: Insert values into the correct attribute key
   set_fact:
-    row_values: >-
-      {{
-        row_values | combine({
-          (attribute_name | string): values_list | map('regex_replace', '^(.*)$', \"'\\1'\") | join('')
-        })
-      }}
-
+    (attribute_name | string): values_list | map("quote") | join('')
 
 - name: Debug row_values
   debug:
     var: row_values
 
-- name: Format CSV line string
+- name: Insert values into the correct attribute key
   set_fact:
-    new_csv_line: "{{ row_values['Business Group'] }},{{ row_values['Location'] }},{{ row_values['Network'] }},{{ row_values['User name'] }},{{ row_values['User mail'] }}"
+    row_values: >-
+      {{
+        row_values | combine({
+          (attribute_name | string): values_list | map('quote') | join('')
+        })
+      }}
 
 - name: Ensure CSV file exists with header
   lineinfile:
