@@ -1,0 +1,30 @@
+---
+# tasks file for update_survey
+- name: Load survey choices from YAML files
+  set_fact:
+    survey_spec: "{{ survey_spec | default([]) + [ {
+      'question_name': item.name,
+      'variable': item.var,
+      'type': 'multiplechoice',
+      'required': true,
+      'choices': lookup('file', meta_file_base_path + '/' + item.file) | from_yaml
+    } ] }}"
+  loop: "{{ survey_question_list }}"
+
+- name: Update the survey for job template
+  uri:
+    url: "{{ aap_url }}/api/controller/v2/job_templates/{{ job_template_id }}/survey_spec/"
+    method: POST
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+    headers:
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      name: "Dynamic Survey"
+      description: "Survey generated from multiple YAML files"
+      spec: "{{ survey_spec }}"
+    status_code: 200
+

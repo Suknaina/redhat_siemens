@@ -1,0 +1,11 @@
+---
+# defaults file for update_survey
+job_template_id: 14
+aap_url: "https://aap-platform-aap.apps.ocp4.imss.work"
+meta_file_base_path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files"
+survey_question_list:
+  - { name: "Select Business Group", var: "business_group", file: "business_group.yml" }
+  - { name: "Select Network", var: "network", file: "network.yml" }
+  - { name: "Select Location", var: "location", file: "location.yml" }
+  - { name: "Select Language", var: "language", file: "language.yml" }
+

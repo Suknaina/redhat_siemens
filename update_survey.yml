@@ -1,0 +1,5 @@
+---
+- name: Update template survey data
+  hosts: localhost
+  roles:
+    - update_survey
