@@ -34,7 +34,7 @@
   failed_when: git_commit_result.rc != 0
 
 - name: Push changes to remote
-  command: git push "https://{{ git_username }}:{{ git_token }}@github.com/Suknaina/redhat_siemens.git"
+  command: git push "https://{{ git_username }}:{{ git_token }}@{{ github_repo_url }}"
   args:
     chdir: "{{ repo_path }}"
   become: true
