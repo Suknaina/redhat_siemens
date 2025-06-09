@@ -1,0 +1,46 @@
+- name: Include user detail tasks
+  include_role:
+    name: vm_provision
+    tasks_from: user_details.yml
+
+- name: Initialize row values dict
+  set_fact:
+    row_values:
+      Business Group: ""
+      Location: ""
+      Network: ""
+      User name: "{{ launched_by }}"
+      User mail: "{{ user_email }}"
+
+- name: Insert values into the correct attribute key
+  set_fact:
+    row_values: >-
+      {{
+        row_values | combine({
+          attribute_name: values_list | map('string') | map('regex_replace', '^', "'") | map('regex_replace', '$', "'") | join('')
+        })
+      }}
+
+- name: Set current date
+  set_fact:
+    current_date: "{{ lookup('pipe', 'date +%Y-%m-%d') }}"
+
+- name: Format CSV line string
+  set_fact:
+    new_csv_line: "{{ row_values['Business Group'] }},{{ row_values['Location'] }},{{ row_values['Network'] }},{{ row_values['User name'] }},{{ row_values['User mail'] }},{{ current_date }}"
+
+- name: Ensure CSV file exists with header
+  become: yes
+  lineinfile:
+    path: "{{ attribute_csv_file }}"
+    line: "{{ csv_header }}"
+    create: yes
+    state: present
+    insertafter: BOF
+
+- name: Append new CSV line to CSV file
+  become: yes
+  lineinfile:
+    path: "{{ attribute_csv_file }}"
+    line: "{{ new_csv_line }}"
+    insertafter: EOF
