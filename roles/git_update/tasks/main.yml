@@ -1,0 +1,24 @@
+---
+# tasks file for git_update
+- name: Pull latest changes
+  command: git pull
+  args:
+    chdir: "{{ repo_path }}"
+
+- name: Add all changes
+  command: git add .
+  args:
+    chdir: "{{ repo_path }}"
+
+- name: Commit changes
+  command: git commit -m "{{ commit_message }}"
+  args:
+    chdir: "{{ repo_path }}"
+  register: commit_result
+  failed_when: commit_result.rc != 0 and '"nothing to commit"' not in commit_result.stderr
+
+- name: Push changes
+  command: >
+    git push https://{{ git_username }}:{{ github_token }}@{{ github_repo_url | regex_replace('^https://', '') }}
+  args:
+    chdir: "{{ repo_path }}"
