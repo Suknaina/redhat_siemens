@@ -26,10 +26,6 @@
   set_fact:
     values_list: "{{ values_string_normalized.split(',') | map('trim') | list }}"
 
-- name: Debug values_list wrapped in single quotes
-  debug:
-    msg: "{{ values_list | map('regex_replace', '^(.*)$', \"'\\1'\") | join('') }}"
-
 - name: Include user detail tasks
   include_role:
     name: vm_provision
@@ -49,7 +45,7 @@
     row_values: >-
       {{
         row_values | combine({
-          attribute_name: values_list | map('regex_replace', '^(.*)$', "'\\1'") | join('')
+          attribute_name: values_list | map('quote') | join('')
         })
       }}
 
