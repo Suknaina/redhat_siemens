@@ -4,6 +4,7 @@
   command: git config --global --add safe.directory "{{ repo_path }}"
   
 - name: Git pull with safe.directory config override
+  become_user: awx
   command: >
     git -c safe.directory="{{ repo_path }}" pull
 
