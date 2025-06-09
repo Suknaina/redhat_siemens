@@ -1,38 +1,24 @@
 ---
 # tasks file for update_survey
-- name: Read YAML files for survey questions
-  ansible.builtin.slurp:
-    src: "{{ item.file }}"
+- name: Build survey_spec list from meta files
+  set_fact:
+    survey_spec: "{{ survey_spec | default([]) + [ {
+      'question_name': item.name,
+      'variable': item.var,
+      'type': 'multiplechoice',
+      'required': true,
+      'choices': (lookup('file', item.file) | from_yaml)
+    } ] }}"
   loop: "{{ survey_question_list }}"
   loop_control:
     label: "{{ item.name }}"
-  register: survey_yaml_files
-
-- name: Decode and parse YAML content into survey_spec
-  set_fact:
-    survey_spec: >-
-      {{
-        survey_yaml_files.results | map('combine', {
-          'question_name': item.item.name,
-          'variable': item.item.var,
-          'type': 'multiplechoice',
-          'required': true,
-          'choices': (item.content | b64decode | from_yaml)
-        }) | list
-      }}
-  vars:
-    item: "{{ item }}"
-  loop: "{{ survey_yaml_files.results }}"
-  loop_control:
-    label: "{{ item.item.name }}"
-  when: item.content is defined
 
 - name: Update the survey for job template
   uri:
     url: "{{ aap_url }}/api/controller/v2/job_templates/{{ job_template_id }}/survey_spec/"
     method: POST
-    user: "{{ username }}"
-    password: "{{ password }}"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
     force_basic_auth: true
     validate_certs: false
     headers:
