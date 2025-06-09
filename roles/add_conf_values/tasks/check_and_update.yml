@@ -1,0 +1,6 @@
+- name: Include tasks to fail if value exists else add value to the file
+  include_tasks: fail_if_value_exists_else_add.yml
+
+- name: Parse normalized values_string into list
+  set_fact:
+    values_list: "{{ values_string_normalized.split(',') | map('trim') | list }}"
