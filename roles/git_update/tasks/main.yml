@@ -3,11 +3,9 @@
 - name: Add project path to Git safe.directory
   command: git config --global --add safe.directory "{{ repo_path }}"
   
-- name: Pull latest changes
-  become: yes
-  command: git pull
-  args:
-    chdir: "{{ repo_path }}"
+- name: Git pull with safe.directory config override
+  command: >
+    git -c safe.directory="{{ repo_path }}" pull
 
 - name: Add all changes
   command: git add .
