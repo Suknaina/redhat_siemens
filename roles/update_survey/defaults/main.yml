@@ -1,6 +1,6 @@
 ---
 # defaults file for update_survey
-job_template_id: 14
+job_template_id: 21
 aap_url: "https://aap-platform-aap.apps.ocp4.imss.work"
 meta_file_base_path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files"
 survey_question_list:
