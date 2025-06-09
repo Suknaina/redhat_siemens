@@ -27,10 +27,12 @@
     name: vm_provision
     tasks_from: user_details.yml
 
-- name: Read existing attribute values from YAML file
-  command: cat /var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/network.yml
+- name: Read existing attribute values from YAML file with sudo
+  ansible.builtin.slurp:
+    path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/{{ attribute_name | lower | replace(' ', '_') }}.yml"
   register: attribute_file_content
   failed_when: attribute_file_content is failed
+  become: yes
 
 - name: Decode YAML content from slurp (base64 to string)
   set_fact:
