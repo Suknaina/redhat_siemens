@@ -1,6 +1,9 @@
-- name: Normalize attribute_choice and map to proper attribute_name
+- name: Normalize attribute_choice
   set_fact:
     attribute_choice_normalized: "{{ attribute_choice | trim | lower }}"
+    
+- name: Normalize attribute_choice and map to proper attribute_name
+  set_fact:
     attribute_name: >-
       {% if attribute_choice_normalized == 'business group' %}Business Group
       {% elif attribute_choice_normalized == 'location' %}Location
