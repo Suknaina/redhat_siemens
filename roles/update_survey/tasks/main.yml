@@ -1,7 +1,6 @@
 ---
 # tasks file for update_survey
 - name: Load choices using slurp instead of file lookup
-  become: yes
   slurp:
     src: "{{ meta_file_base_path }}/{{ item.file }}"
   register: slurped_files
