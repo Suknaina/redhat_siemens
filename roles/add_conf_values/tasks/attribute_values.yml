@@ -44,22 +44,10 @@
       User name: "{{ launched_by }}"
       User mail: "{{ user_email }}"
 
-- name: Insert values into the correct attribute key
-  set_fact:
-    (attribute_name | string): values_list | map("quote") | join('')
-
-- name: Debug row_values
-  debug:
-    var: row_values
 
 - name: Insert values into the correct attribute key
   set_fact:
-    row_values: >-
-      {{
-        row_values | combine({
-          (attribute_name | string): values_list | map('quote') | join('')
-        })
-      }}
+    row_values: "{{ row_values | combine({ attribute_name: values_list | map('quote') | join('') }) }}"
 
 - name: Ensure CSV file exists with header
   lineinfile:
