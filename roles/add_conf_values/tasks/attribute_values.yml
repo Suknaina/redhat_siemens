@@ -45,7 +45,7 @@
     row_values: >-
       {{
         row_values | combine({
-          attribute_name: values_list | map('quote') | join('')
+          attribute_name: values_list | map("format", "'{}'") | join('')
         })
       }}
 
