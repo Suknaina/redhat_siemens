@@ -15,6 +15,34 @@
   failed_when: git_pull_result.rc != 0
   ignore_errors: false
 
-- name: Print git pull result
-  ansible.builtin.debug:
-    var: git_pull_result.stdout_lines
+- name: Add all changes
+  command: git add .
+  args:
+    chdir: "{{ repo_path }}"
+  become: true
+  become_user: awx
+  register: git_add_result
+  failed_when: git_add_result.rc != 0
+
+- name: Commit changes
+  command: git commit -m "{{ commit_message }}"
+  args:
+    chdir: "{{ repo_path }}"
+  become: true
+  become_user: awx
+  register: git_commit_result
+  failed_when: git_commit_result.rc != 0
+
+- name: Push changes to remote
+  command: git push
+  args:
+    chdir: "{{ repo_path }}"
+  become: true
+  become_user: awx
+  register: git_push_result
+  failed_when: git_push_result.rc != 0
+  ignore_errors: false
+
+- name: Show Git push result
+  debug:
+    var: git_push_result.stdout_lines
