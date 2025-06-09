@@ -1,8 +1,9 @@
 ---
 # tasks file for update_survey
 - name: Load choices using slurp instead of file lookup
-  slurp:
-    src: "{{ meta_file_base_path }}/{{ item.file }}"
+  become: yes
+  ansible_builtin_slurp:
+    path: "{{ meta_file_base_path }}/{{ item.file }}"
   register: slurped_files
   loop: "{{ survey_question_list }}"
 
