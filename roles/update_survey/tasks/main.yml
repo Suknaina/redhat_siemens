@@ -17,8 +17,8 @@
   uri:
     url: "{{ aap_url }}/api/controller/v2/job_templates/{{ job_template_id }}/survey_spec/"
     method: POST
-    user: "{{ aap_username }}"
-    password: "{{ aap_password }}"
+    user: "{{ username }}"
+    password: "{{ password }}"
     force_basic_auth: true
     validate_certs: false
     headers:
