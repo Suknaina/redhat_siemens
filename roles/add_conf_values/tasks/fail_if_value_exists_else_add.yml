@@ -9,22 +9,35 @@
   set_fact:
     existing_values: "{{ attribute_file_content.content | b64decode | from_yaml }}"
 
-- name: Fail if values_string_normalized exists in existing_values
-  fail:
-    msg: "Value '{{ values_string_normalized }}' already exists in {{ attribute_name }} file!"
-  when: values_string_normalized in existing_values
+- name: Ensure existing_values is a list
+  set_fact:
+    existing_values: >-
+      {% if existing_values is string %}
+        {{ [existing_values] }}
+      {% else %}
+        {{ existing_values }}
+      {% endif %}
 
-- name: Append new value to YAML file
+- name: Extract values to be added from values_string_normalized
+  set_fact:
+    values_to_add: "{{ values_string_normalized.split(',') | map('trim') | list }}"
+
+- name: Fail if any value already exists
+  fail:
+    msg: "One or more values already exist in {{ attribute_name }} file: {{ values_to_add | select('in', existing_values) | list }}"
+  when: values_to_add | select('in', existing_values) | list | length > 0
+
+- name: Append new values to YAML file
   lineinfile:
     path: "{{ attribute_file_base_path }}/{{ attribute_name | lower | replace(' ', '_') }}.yml"
-    line: "- {{ values_string_normalized }}"
+    line: "- {{ item }}"
     insertafter: EOF
     mode: '0644'
-  when: values_string_normalized not in existing_values
-  loop: "{{ values_string_normalized.split(',') | map('trim') | list }}"
+    create: yes
+  loop: "{{ values_to_add }}"
+  when: item not in existing_values
   become: yes
 
-- name: Debug message when value added successfully
+- name: Debug message when values added successfully
   debug:
-    msg: "Value '{{ values_string_normalized }}' added successfully to {{ attribute_name }} file."
-  when: values_string_normalized not in existing_values
+    msg: "Values {{ values_to_add }} added successfully to {{ attribute_name }} file."
