@@ -1,12 +1,3 @@
-- name: Ensure CSV file exists with header
-  become: yes
-  lineinfile:
-    path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/attribute_values_report.csv"
-    line: "Business Group,Location,Network,User name,User mail"
-    create: yes
-    state: present
-    insertafter: BOF
-    
 - name: Normalize attribute_choice
   set_fact:
     attribute_choice_normalized: "{{ attribute_choice | trim | lower }}"
@@ -23,6 +14,10 @@
   set_fact:
     attribute_name: "{{ attribute_name | trim }}"
 
+- name: Debug attribute_name
+  debug:
+    var: attribute_name
+
 - name: Normalize values_string (handle newline-separated input)
   set_fact:
     values_string_normalized: "{{ values_string | replace('\n', ',') }}"
@@ -36,29 +31,6 @@
     name: vm_provision
     tasks_from: user_details.yml
 
-- name: Read existing attribute values from YAML file with sudo
-  ansible.builtin.slurp:
-    path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/{{ attribute_name | lower | replace(' ', '_') }}.yml"
-  register: attribute_file_content
-  failed_when: attribute_file_content is failed
-  become: yes
-
-- name: Decode YAML content from slurp (base64 to string)
-  set_fact:
-    attribute_file_yaml: "{{ attribute_file_content.content | b64decode | from_yaml }}"
-
-- name: Check if any of the new values already exist
-  set_fact:
-    duplicate_values: >-
-      {{
-        values_list | select("in", attribute_file_yaml) | list
-      }}
-
-- name: Fail if duplicates found in attribute file
-  fail:
-    msg: "The following values already exist in {{ attribute_name }} file: {{ duplicate_values }}"
-  when: duplicate_values | length > 0
-
 - name: Initialize row values dict with empty strings
   set_fact:
     row_values:
@@ -71,22 +43,31 @@
 - name: Insert values into the correct attribute key
   set_fact:
     row_values: >-
-      {%
-        set quoted_values = values_list | map('string') | map('regex_replace', '^', "'") | map('regex_replace', '$', "'") | join('')
-      %}
       {{
         row_values | combine({
-          attribute_name: quoted_values
+          attribute_name: values_list | map('string') | map('regex_replace', '^', "'") | map('regex_replace', '$', "'") | join('')
         })
       }}
+
+
+- name: Debug row_values
+  debug:
+    var: row_values
 
 - name: Format CSV line string
   set_fact:
     new_csv_line: "{{ row_values['Business Group'] }},{{ row_values['Location'] }},{{ row_values['Network'] }},{{ row_values['User name'] }},{{ row_values['User mail'] }}"
 
-- name: Append new CSV line to CSV file
-  become: yes
+- name: Ensure CSV file exists with header
   lineinfile:
-    path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/attribute_values_report.csv"
+    path: "/tmp/attribute_values.csv"
+    line: "Business Group,Location,Network,User name,User mail"
+    create: yes
+    state: present
+    insertafter: BOF
+
+- name: Append new CSV line to CSV file
+  lineinfile:
+    path: "/tmp/attribute_values.csv"
     line: "{{ new_csv_line }}"
     insertafter: EOF
