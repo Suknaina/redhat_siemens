@@ -1,16 +1,23 @@
 ---
 # tasks file for update_survey
-- name: Load survey choices from YAML files
+- name: Load choices using slurp instead of file lookup
   become: yes
+  slurp:
+    src: "{{ meta_file_base_path }}/{{ item.file }}"
+  register: slurped_files
+  loop: "{{ survey_question_list }}"
+
+- name: Decode and parse slurped YAML content
   set_fact:
     survey_spec: "{{ survey_spec | default([]) + [ {
-      'question_name': item.name,
-      'variable': item.var,
+      'question_name': item.item.name,
+      'variable': item.item.var,
       'type': 'multiplechoice',
       'required': true,
-      'choices': lookup('file', meta_file_base_path + '/' + item.file) | from_yaml
+      'choices': (item.content | b64decode | from_yaml)
     } ] }}"
-  loop: "{{ survey_question_list }}"
+  loop: "{{ slurped_files.results }}"
+
 
 - name: Update the survey for job template
   uri:
