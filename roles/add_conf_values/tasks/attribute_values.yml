@@ -22,6 +22,15 @@
   set_fact:
     values_list: "{{ values_string_normalized.split(',') | map('trim') | list }}"
 
+- name: Insert values into the correct attribute key
+  set_fact:
+    row_values: >-
+      {{
+        row_values | combine({
+          attribute_name: values_list | map('string') | map('regex_replace', '^', "'") | map('regex_replace', '$', "'") | join('')
+        })
+      }}
+      
 - name: Include user detail tasks
   include_role:
     name: vm_provision
@@ -35,16 +44,6 @@
       Network: ""
       User name: "{{ launched_by }}"
       User mail: "{{ user_email }}"
-
-- name: Insert values into the correct attribute key
-  set_fact:
-    row_values: >-
-      {{
-        row_values | combine({
-          attribute_name: values_list | map('string') | map('regex_replace', '^', "'") | map('regex_replace', '$', "'") | join('')
-        })
-      }}
-
 
 - name: Format CSV line string
   set_fact:
