@@ -1,2 +1,6 @@
 ---
 # vars file for add_conf_values
+attribute_choices_map:
+  business group: Business Group
+  location: Location
+  network: Network
