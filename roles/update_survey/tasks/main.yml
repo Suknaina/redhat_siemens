@@ -1,15 +1,34 @@
 ---
 # tasks file for update_survey
-- name: Decode and parse slurped YAML content
-  set_fact:
-    survey_spec: "{{ survey_spec | default([]) + [ {
-      'question_name': item.item.name,
-      'variable': item.item.var,
-      'type': 'multiplechoice',
-      'required': true,
-      'choices': (item.content | b64decode | from_yaml)
-    } ] }}"
+---
+# tasks file for update_survey
 
+- name: Read YAML files for survey questions
+  ansible.builtin.slurp:
+    src: "{{ item.file }}"
+  loop: "{{ survey_question_list }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: survey_yaml_files
+
+- name: Decode and parse YAML content into survey_spec
+  set_fact:
+    survey_spec: >-
+      {{
+        survey_yaml_files.results | map('combine', {
+          'question_name': item.item.name,
+          'variable': item.item.var,
+          'type': 'multiplechoice',
+          'required': true,
+          'choices': (item.content | b64decode | from_yaml)
+        }) | list
+      }}
+  vars:
+    item: "{{ item }}"
+  loop: "{{ survey_yaml_files.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when: item.content is defined
 
 - name: Update the survey for job template
   uri:
@@ -27,4 +46,3 @@
       description: "Survey generated from multiple YAML files"
       spec: "{{ survey_spec }}"
     status_code: 200
-
