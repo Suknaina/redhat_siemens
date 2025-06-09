@@ -18,8 +18,8 @@
   set_fact:
     values_string_normalized: "{{ values_string | replace('\n', ',') }}"
 
-- name: Include tasks to fail if value exists
-  include_tasks: fail_value_exists.yml
+- name: Include tasks to fail if value exists else add value to the file
+  include_tasks: fail_if_value_exists_else_add.yml
 
 - name: Parse normalized values_string into list
   set_fact:
