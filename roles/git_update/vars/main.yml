@@ -4,7 +4,7 @@
 
 repo_path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens"
 commit_message: "Changes made by playbook"
-github_repo_url: "https://github.com/Suknaina/redhat_siemens.git"
+github_repo_url: "github.com/Suknaina/redhat_siemens.git"
 github_token: "{{git_password}}"
 git_username: "{{git_username}}"  
 
