@@ -1,6 +1,7 @@
 ---
 # tasks file for git_update
 - name: Pull latest changes
+  become: yes
   command: git pull
   args:
     chdir: "{{ repo_path }}"
