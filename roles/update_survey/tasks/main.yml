@@ -1,8 +1,5 @@
 ---
 # tasks file for update_survey
----
-# tasks file for update_survey
-
 - name: Read YAML files for survey questions
   ansible.builtin.slurp:
     src: "{{ item.file }}"
