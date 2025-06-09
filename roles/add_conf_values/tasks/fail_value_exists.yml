@@ -1,0 +1,19 @@
+- name: Read existing attribute values from YAML file with sudo
+  ansible.builtin.slurp:
+    path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/{{ attribute_name | lower | replace(' ', '_') }}.yml"
+  register: attribute_file_content
+  failed_when: attribute_file_content is failed
+  become: yes
+
+- name: Decode and parse YAML content
+  set_fact:
+    existing_values: "{{ attribute_file_content.content | b64decode | from_yaml }}"
+
+- name: Check if values_string_normalized exists in existing_values
+  fail:
+    msg: "Value '{{ values_string_normalized }}' already exists in {{ attribute_name }} file!"
+  when: values_string_normalized in existing_values
+
+- name: Continue if value does not exist
+  debug:
+    msg: "Value '{{ values_string_normalized }}' does not exist in {{ attribute_name }} file, safe to proceed."
