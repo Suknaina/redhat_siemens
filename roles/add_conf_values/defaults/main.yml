@@ -1,2 +1,5 @@
 ---
 # defaults file for add_conf_values
+attribute_file_base_path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files"
+attribute_csv_file: "{{ attribute_file_base_path }}/attribute_values_report.csv"
+csv_header: "Business Group,Location,Network,User name,User mail,Date"
