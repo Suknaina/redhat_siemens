@@ -1,4 +1,12 @@
 ---
-- name: Get values from user
-  include_tasks: attribute_values.yml
+#- name: Get values from user
+#  include_tasks: attribute_values.yml
 
+- name: Normalize input values
+  include_tasks: input_facts.yml
+
+- name: Validate and update attribute YAML
+  include_tasks: check_and_update.yml
+
+- name: Prepare and write CSV
+  include_tasks: prepare_csv.yml
