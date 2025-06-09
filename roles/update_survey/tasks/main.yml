@@ -1,12 +1,5 @@
 ---
 # tasks file for update_survey
-- name: Load choices using slurp instead of file lookup
-  become: yes
-  ansible.builtin.slurp:
-    path: "{{ meta_file_base_path }}/{{ item.file }}"
-  register: slurped_files
-  loop: "{{ survey_question_list }}"
-
 - name: Decode and parse slurped YAML content
   set_fact:
     survey_spec: "{{ survey_spec | default([]) + [ {
@@ -16,7 +9,6 @@
       'required': true,
       'choices': (item.content | b64decode | from_yaml)
     } ] }}"
-  loop: "{{ slurped_files.results }}"
 
 
 - name: Update the survey for job template
