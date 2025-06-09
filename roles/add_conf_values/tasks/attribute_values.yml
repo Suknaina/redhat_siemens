@@ -54,7 +54,7 @@
     
 - name: Format CSV line string
   set_fact:
-    new_csv_line: "{{ row_values['Business Group'] }},{{ row_values['Location'] }},{{ row_values['Network'] }},{{ row_values['User name'] }},{{ row_values['User mail'],{{ current_date }} }}"
+    new_csv_line: "{{ row_values['Business Group'] }},{{ row_values['Location'] }},{{ row_values['Network'] }},{{ row_values['User name'] }},{{ row_values['User mail'] }},{{ current_date }}"
 
 - name: Ensure CSV file exists with header
   become: yes
