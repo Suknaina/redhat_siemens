@@ -1,5 +1,8 @@
 ---
 # tasks file for git_update
+- name: Add project path to Git safe.directory
+  command: git config --global --add safe.directory "{{ repo_path }}"
+  
 - name: Pull latest changes
   become: yes
   command: git pull
