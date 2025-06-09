@@ -1,27 +1,20 @@
----
-# tasks file for git_update
-- name: Add project path to Git safe.directory
-  command: git config --global --add safe.directory "{{ repo_path }}"
-  
-- name: Git pull with safe.directory config override
+- name: Ensure Git safe.directory is trusted
+  ansible.builtin.command:
+    cmd: git config --global --add safe.directory "{{ repo_path }}"
+  become: true
   become_user: awx
-  command: >
-    git -c safe.directory="{{ repo_path }}" pull
+  changed_when: false  # Idempotency
 
-- name: Add all changes
-  command: git add .
-  args:
+- name: Perform git pull in the repo
+  ansible.builtin.command:
+    cmd: git pull
     chdir: "{{ repo_path }}"
+  become: true
+  become_user: awx
+  register: git_pull_result
+  failed_when: git_pull_result.rc != 0
+  ignore_errors: false
 
-- name: Commit changes
-  command: git commit -m "{{ commit_message }}"
-  args:
-    chdir: "{{ repo_path }}"
-  register: commit_result
-  failed_when: commit_result.rc != 0 and '"nothing to commit"' not in commit_result.stderr
-
-- name: Push changes
-  command: >
-    git push https://{{ git_username }}:{{ github_token }}@{{ github_repo_url | regex_replace('^https://', '') }}
-  args:
-    chdir: "{{ repo_path }}"
+- name: Print git pull result
+  ansible.builtin.debug:
+    var: git_pull_result.stdout_lines
