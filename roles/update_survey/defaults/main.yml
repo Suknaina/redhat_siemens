@@ -8,4 +8,5 @@ survey_question_list:
   - { name: "Select Network", var: "network", file: "meta_files/network.yml" }
   - { name: "Select Location", var: "location", file: "meta_files/location.yml" }
   - { name: "Select Language", var: "language", file: "meta_files/language.yml" }
+  - { name: "Select image", var: "image_url", file: "meta_file/image_urls.yml" }
 
