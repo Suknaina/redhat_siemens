@@ -12,6 +12,9 @@
           vm_count: "{{ vm_count }}"
           size: "{{ size }}"
 
+    - debug:
+        msg: "{{ size }}"
+
     - name: Extract CPU count
       set_fact:
         cpu_count: "{{ size | regex_search('\\((\\d+)\\s*vCPU', '\\1') | int }}"
