@@ -2,6 +2,14 @@
   set_fact:
     survey_spec: "{{ survey_spec + extra_questions }}"
   vars:
+    survey_spec: "{{ survey_spec | default([]) + [ {
+      'question_name': item.name,
+      'variable': item.var,
+      'type': 'multiplechoice',
+      'required': true,
+      'choices': (lookup('file', item.file) | from_yaml),
+      'default': ''
+    } ] }}"
     extra_questions:
      - question_name: "Number of VMs"
        variable: "vm_count"
@@ -18,4 +26,4 @@
          - S (4 vCPU, 8 GB RAM)
          - M (8 vCPU, 16 GB RAM)
          - L (16 vCPU, 32 GB RAM)
-       default: M
+       default: M (8 vCPU, 16 GB RAM)
