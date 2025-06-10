@@ -2,7 +2,7 @@
 # tasks file for update_survey
 - name: Include tasks to extract images from the template
   include_tasks: extract_image.yml
-  hello
+
 - name: Build survey_spec list from meta files
   delegate_to: localhost
   set_fact:
