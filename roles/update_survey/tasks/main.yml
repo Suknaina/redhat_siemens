@@ -4,6 +4,7 @@
   include_tasks: extract_image.yml
   
 - name: Build survey_spec list from meta files
+  delegate_to: localhost
   set_fact:
     survey_spec: "{{ survey_spec | default([]) + [ {
       'question_name': item.name,
