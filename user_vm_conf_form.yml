@@ -23,9 +23,6 @@
     - name: Save CPU and memory to stats
       set_stats:
         data:
-          cpu_count: "{{ cpu_count }}"
-          memory: "{{ memory }}"
+          cpu_count: "{{ size.split('(')[1].split('vCPU')[0] | trim | int }}"
+          memory: "{{ size.split(',')[1].split('GB')[0] | trim | int }}"
 
-    - name: Display extracted values
-      debug:
-        msg: "CPU Count: {{ cpu_count }}, Memory: {{ memory }} GB"
