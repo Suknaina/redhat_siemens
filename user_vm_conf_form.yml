@@ -12,16 +12,13 @@
           vm_count: "{{ vm_count }}"
           size: "{{ size }}"
 
-    - debug:
-        msg: "{{ size }}"
-
     - name: Extract CPU count
       set_fact:
         cpu_count: "{{ size.split('(')[1].split('vCPU')[0] | trim | int  }}"
 
     - name: Extract memory
       set_fact:
-        memory: "{{ size | regex_search(', (\\d+) GB RAM', '\\1') | int }}"
+        memory: "{{ size.split(',')[1].split('GB')[0] | trim | int }}"
 
     - name: Save CPU and memory to stats
       set_stats:
