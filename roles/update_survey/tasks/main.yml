@@ -7,7 +7,7 @@
       'variable': item.var,
       'type': 'multiplechoice',
       'required': true,
-      'choices': (lookup('file', item.file) | from_yaml)
+      'choices': (lookup('file', item.file) | from_yaml),
       'default': ''
     } ] }}"
   loop: "{{ survey_question_list }}"
