@@ -4,12 +4,14 @@
   tasks:
     - name: Capture all the form data
       set_stats:
-        business_group: "{{ business_group }}"
-        network: "{{ network }}"
-        location: "{{ location }}"
-        language: "{{ language }}"
-        vm_count: "{{ vm_count }}"
-        size: "{{ size }}"
+        data:
+          business_group: "{{ business_group }}"
+          network: "{{ network }}"
+          location: "{{ location }}"
+          language: "{{ language }}"
+          vm_count: "{{ vm_count }}"
+          size: "{{ size }}"
 
-    - debug: 
-        msg: "{{ size }}"
+    - name: Show the size value
+      debug: 
+        msg: "The selected size is: {{ size }}"
