@@ -24,4 +24,5 @@
     create: yes
 
 - name: Include role to update git
-  include_role: git_update
+  include_role: 
+    name: git_update
