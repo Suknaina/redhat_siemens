@@ -1,7 +1,7 @@
-vm_name: vm-with-inline-url
+vm_name: vm-testing
 namespace: aap-poc
-vm_cpu_cores: 2
-vm_memory: 2Gi
+vm_cpu_cores: "{{cpu_count}}"
+vm_memory: "{{memory}}Gi"
 vm_disk_size: 10Gi
 image_url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
 cloud_init_password: centos
