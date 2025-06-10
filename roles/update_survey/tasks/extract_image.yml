@@ -14,9 +14,11 @@
   loop: "{{ url_list }}"
 
 - name: Write image names to file
+  delegate_to: 172.16.3.42
+  become: yes
   lineinfile:
     line: "{{ image_names | to_nice_yaml }}"
-    path: "/tmp/image_urls.yml"
+    path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/image_urls.yml"
     insertafter: EOF
     mode: '0644'
     create: yes
