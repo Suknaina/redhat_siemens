@@ -14,7 +14,8 @@
   loop: "{{ url_list }}"
 
 - name: Write image names to file
-  become: yes
+  become: true
+  become_user: awx
   copy:
     content: "{{ image_names | to_nice_yaml }}"
     dest: /var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/image_urls.yml
