@@ -3,3 +3,37 @@
 - name: Include tasks to extract images from the template
   include_tasks: extract_image.yml
   
+- name: Build survey_spec list from meta files
+  set_fact:
+    survey_spec: "{{ survey_spec | default([]) + [ {
+      'question_name': item.name,
+      'variable': item.var,
+      'type': 'multiplechoice',
+      'required': true,
+      'choices': (lookup('file', item.file) | from_yaml),
+      'default': ''
+    } ] }}"
+  loop: "{{ survey_question_list }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Include tasks to get static question
+  include_tasks: static_question.yml
+
+- name: Update the survey for job template
+  uri:
+    #url: "{{ aap_url }}/api/controller/v2/job_templates/{{ job_template_id }}/survey_spec/"
+    url: "{{ aap_url }}/api/controller/v2/workflow_job_templates/{{ workflow_job_template_id }}/survey_spec/"
+    method: POST
+    user: "{{ username }}"
+    password: "{{ password }}"
+    force_basic_auth: true
+    validate_certs: false
+    headers:
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      name: "Dynamic Survey"
+      description: "Survey generated from multiple YAML files"
+      spec: "{{ survey_spec }}"
+    status_code: 200
