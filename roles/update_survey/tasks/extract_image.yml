@@ -14,6 +14,12 @@
     image_names: "{{ image_names + [item.split('/')[-1].split('.')[0]] }}"
   loop: "{{ url_list }}"
 
+- name: Clear file before use
+  become: yes
+  copy:
+    content: ""
+    dest: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/image_urls.yml"
+    
 - name: Write image names to file
   become: yes
   lineinfile:
