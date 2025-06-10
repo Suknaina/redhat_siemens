@@ -19,7 +19,8 @@
 
 - name: Update the survey for job template
   uri:
-    url: "{{ aap_url }}/api/controller/v2/job_templates/{{ job_template_id }}/survey_spec/"
+    #url: "{{ aap_url }}/api/controller/v2/job_templates/{{ job_template_id }}/survey_spec/"
+    url: "{{ aap_url }}/api/controller/v2/workflow_job_templates/{{ workflow_job_template_id }}/survey_spec/"
     method: POST
     user: "{{ username }}"
     password: "{{ password }}"
