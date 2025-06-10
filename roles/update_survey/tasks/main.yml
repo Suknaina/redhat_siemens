@@ -14,6 +14,9 @@
   loop_control:
     label: "{{ item.name }}"
 
+- name: Include tasks to get static question
+  include_tasks: static_question.yml
+
 - name: Update the survey for job template
   uri:
     url: "{{ aap_url }}/api/controller/v2/job_templates/{{ job_template_id }}/survey_spec/"
