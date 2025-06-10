@@ -1,0 +1,21 @@
+- name: Add vm_count and size questions to survey_spec
+  set_fact:
+    survey_spec: "{{ survey_spec + extra_questions }}"
+  vars:
+    extra_questions:
+     - question_name: "Number of VMs"
+       variable: "vm_count"
+       type: "integer"
+       required: true
+       default: 1
+       min: 1
+       max: 10
+     - question_name: "Select VM Size"
+       variable: "size"
+       type: "multiplechoice"
+       required: true
+       choices:
+         - S (4 vCPU, 8 GB RAM)
+         - M (8 vCPU, 16 GB RAM)
+         - L (16 vCPU, 32 GB RAM)
+       default: M
