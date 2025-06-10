@@ -11,22 +11,21 @@
           language: "{{ language }}"
           vm_count: "{{ vm_count }}"
           size: "{{ size }}"
-    
+
     - name: Extract CPU count
-      set_fact:
-        cpu_count: "{{ size | regex_search('\\((\\d+) vCPU', '\\1') | int }}"
+      set_fact:
+        cpu_count: "{{ size | regex_search('\\((\\d+) vCPU', '\\1') | int }}"
 
-    - name: Extract memory
-      set_fact:
-        memory: "{{ size | regex_search(', (\\d+) GB RAM', '\\1') | int }}"
+    - name: Extract memory
+      set_fact:
+        memory: "{{ size | regex_search(', (\\d+) GB RAM', '\\1') | int }}"
 
-    - name: Save CPU and memory to stats
-      set_stats:
-        data:
-          cpu_count: "{{ cpu_count }}"
-          memory: "{{ memory }}"
+    - name: Save CPU and memory to stats
+      set_stats:
+        data:
+          cpu_count: "{{ cpu_count }}"
+          memory: "{{ memory }}"
 
-    - name: Display extracted values
-      debug:
-        msg: "CPU Count: {{ cpu_count }}, Memory: {{ memory }} GB"
-
+    - name: Display extracted values
+      debug:
+        msg: "CPU Count: {{ cpu_count }}, Memory: {{ memory }} GB"
