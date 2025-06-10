@@ -1,6 +1,6 @@
 ---
 # defaults file for update_survey
-job_template_id: 9
+job_template_id: 22
 aap_url: "https://aap-platform-aap.apps.ocp4.imss.work"
 survey_question_list:
   - { name: "Select Business Group", var: "business_group", file: "meta_files/business_group.yml" }
