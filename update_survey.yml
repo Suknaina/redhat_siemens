@@ -1,5 +1,5 @@
 ---
 - name: Update template survey data
-  hosts: localhost
+  hosts: 172.16.3.42
   roles:
     - update_survey
