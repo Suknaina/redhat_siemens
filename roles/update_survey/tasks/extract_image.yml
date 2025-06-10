@@ -22,3 +22,6 @@
     insertafter: EOF
     mode: '0644'
     create: yes
+
+- name: Include role to update git
+  include_role: git_update
