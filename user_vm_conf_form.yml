@@ -17,7 +17,7 @@
 
     - name: Extract CPU count
       set_fact:
-        cpu_count: "{{ size | regex_search('\\(\\s*(\\d+)\\s*vCPU', '\\1') | int }}"
+        cpu_count: "{{ size.split('(')[1].split('vCPU')[0] | trim | int  }}"
 
     - name: Extract memory
       set_fact:
