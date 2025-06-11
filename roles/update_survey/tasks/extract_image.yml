@@ -18,6 +18,7 @@
 - name: Get the content list
   set_fact:
     url_list: "{{ url_lists.content | from_yaml }}"
+
     
 - name: Extract image names and store in list
   set_fact:
