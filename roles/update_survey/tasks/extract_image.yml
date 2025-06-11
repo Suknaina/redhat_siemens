@@ -37,6 +37,8 @@
     path: "/var/lib/awx/projects/sukanya/siemens/redhat_siemens/meta_files/image_urls.yml"
     insertafter: EOF
     mode: '0644'
+    group: awx
+    owner: awx
     create: yes
 
 - name: Include role to update git
