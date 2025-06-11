@@ -13,23 +13,17 @@
           size: "{{ size }}"
           image_name: "{{ image_url }}"
 
-    - name: Save CPU and memory to stats
-      set_stats:
-        data:
-          cpu_count: "{{ size.split('(')[1].split('vCPU')[0] | trim | int }}"
-          memory: "{{ size.split(',')[1].split('GB')[0] | trim | int }}"
-
     - name: Get the url
       uri:
         url: "https://raw.githubusercontent.com/Suknaina/redhat_siemens/refs/heads/main/image_path.txt"
         return_content: yes
       register: file_content
 
-    - name: Find matching line
-      set_fact:
-        matched_line: "{{ (file_content.content.split('\n') | select('search', image_url) | list | first).lstrip('- ') }}"
+    - name: Save CPU and memory to stats
+      set_stats:
+        data:
+          cpu_count: "{{ size.split('(')[1].split('vCPU')[0] | trim | int }}"
+          memory: "{{ size.split(',')[1].split('GB')[0] | trim | int }}"
+          image_url: "{{ (file_content.content.split('\n') | select('search', image_url) | list | first).lstrip('- ') }}"
 
-    - name: Show matched line
-      debug:
-        msg: "Matched line: {{ matched_line }}"
 
