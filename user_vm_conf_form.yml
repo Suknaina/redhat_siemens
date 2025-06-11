@@ -11,7 +11,7 @@
           language: "{{ language }}"
           vm_count: "{{ vm_count }}"
           size: "{{ size }}"
-          image_name: "{{ image_url }}"
+          image_name: "{{ image }}"
 
     - name: Get the url
       uri:
