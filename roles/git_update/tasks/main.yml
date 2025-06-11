@@ -40,4 +40,4 @@
   become: true
   become_user: awx
   register: git_push_result
-  when: git_push_result.rc == 0 and git_commit_result.rc == 0
+  when: git_commit_result.rc == 0
