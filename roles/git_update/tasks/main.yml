@@ -31,6 +31,7 @@
   become: true
   become_user: awx
   register: git_commit_result
+  ignore_errors: yes
 
 - name: Push changes to remote
   command: git push "https://{{ git_username }}:{{ git_password }}@{{ github_repo_url }}"
