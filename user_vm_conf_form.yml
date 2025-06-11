@@ -24,6 +24,6 @@
         data:
           cpu_count: "{{ size.split('(')[1].split('vCPU')[0] | trim | int }}"
           memory: "{{ size.split(',')[1].split('GB')[0] | trim | int }}"
-          template: "{{ (file_content.content.split('\n') | select('search', image_url) | list | first).lstrip('- ') }}"
+          template: "{{ (file_content.content.split('\n') | select('search', image) | list | first).lstrip('- ') }}"
 
 
