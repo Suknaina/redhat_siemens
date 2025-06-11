@@ -15,10 +15,14 @@
 #    src: image_path.template
 #  register: url_content
 
-- name: Decode file and convert to list
-  set_fact:
-    url_list: "{{ url_content['content'] | b64decode | from_yaml }}"
+#- name: Decode file and convert to list
+#  set_fact:
+#    url_list: "{{ url_content['content'] | b64decode | from_yaml }}"
 
+- name: Get the content list
+  set_fact:
+    url_list: "{{ url_lists.content | from_yaml }}"
+    
 - name: Extract image names and store in list
   set_fact:
     image_names: "{{ image_names + [item.split('/')[-1].split('.')[0]] }}"
