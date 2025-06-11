@@ -27,7 +27,7 @@
 
     - name: Find matching line
       set_fact:
-        matched_line: "{{ file_content.content.split('\n') | select('search', image_url) | list | first }}"
+        matched_line: "{{ (file_content.content.split('\n') | select('search', image_url) | list | first).lstrip('- ') }}"
 
     - name: Show matched line
       debug:
