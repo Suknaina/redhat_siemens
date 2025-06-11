@@ -6,7 +6,7 @@
   register: url_lists
 
 - debug:
-    msg: "{{ url_lists.content }}"
+    msg: "{{ url_lists.content.rawLines }}"
 
 
 #- name: Read file
