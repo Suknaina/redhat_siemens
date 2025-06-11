@@ -1,9 +1,19 @@
 ---
-- name: Read file
-  delegate_to: localhost
-  ansible.builtin.slurp:
-    src: image_path.template
-  register: url_content
+- name: Fetch url template list from url
+  uri:
+    url: "https://github.com/Suknaina/redhat_siemens/blob/main/image_path.template"
+    return_content: yes
+  register: url_lists
+
+- debug:
+    msg: "{{ url_lists }}"
+
+
+#- name: Read file
+#  delegate_to: localhost
+#  ansible.builtin.slurp:
+#    src: image_path.template
+#  register: url_content
 
 - name: Decode file and convert to list
   set_fact:
