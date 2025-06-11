@@ -1,7 +1,7 @@
 ---
 - name: Fetch url template list from url
   uri:
-    url: "https://github.com/Suknaina/redhat_siemens/blob/main/image_path.template"
+    url: "https://github.com/Suknaina/redhat_siemens/blob/main/image_path.txt"
     return_content: yes
   register: url_lists
 
