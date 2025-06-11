@@ -31,7 +31,7 @@
   become: true
   become_user: awx
   register: git_commit_result
-  failed_when: git_commit_result.rc != 0
+  when: git_commit_result.rc == 0
 
 - name: Push changes to remote
   command: git push "https://{{ git_username }}:{{ git_password }}@{{ github_repo_url }}"
@@ -40,9 +40,4 @@
   become: true
   become_user: awx
   register: git_push_result
-  failed_when: git_push_result.rc != 0
-  ignore_errors: false
-
-- name: Show Git push result
-  debug:
-    var: git_push_result.stdout_lines
+  when: git_push_result.rc == 0 and git_commit_result.rc == 0
