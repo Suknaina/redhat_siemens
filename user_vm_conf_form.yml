@@ -19,7 +19,7 @@
         return_content: yes
       register: file_content
 
-    - name: Save CPU and memory to stats
+    - name: Save CPU, memory and template to stats
       set_stats:
         data:
           cpu_count: "{{ size.split('(')[1].split('vCPU')[0] | trim | int }}"
