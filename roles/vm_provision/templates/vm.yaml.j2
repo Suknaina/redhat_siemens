@@ -32,8 +32,9 @@ spec:
           cloudInitNoCloud:
             userData: |
               #cloud-config
+              lock_passwd: false
               password: {{ cloud_init_password }}
-              chpasswd: { expire: False }
+              chpasswd: { expire: true }
               ssh_pwauth: True
   dataVolumeTemplates:
     - metadata:
