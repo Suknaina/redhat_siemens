@@ -1,14 +1,4 @@
 ---
-- name: Fetch url template list from url
-  uri:
-    url: "https://raw.githubusercontent.com/Suknaina/redhat_siemens/refs/heads/main/image_path.txt"
-    return_content: yes
-  register: url_lists
-
-- debug:
-    msg: "{{ url_lists.content }}"
-
-
 #- name: Read file
 #  delegate_to: localhost
 #  ansible.builtin.slurp:
@@ -19,6 +9,12 @@
 #  set_fact:
 #    url_list: "{{ url_content['content'] | b64decode | from_yaml }}"
 
+- name: Fetch url template list from url
+  uri:
+    url: "https://raw.githubusercontent.com/Suknaina/redhat_siemens/refs/heads/main/image_path.txt"
+    return_content: yes
+  register: url_lists
+  
 - name: Get the content list
   set_fact:
     url_list: "{{ url_lists.content | from_yaml }}"
