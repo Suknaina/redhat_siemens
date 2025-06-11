@@ -1,5 +1,5 @@
-- https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
-- https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud-Base.latest.x86_64.qcow2
-- https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
-- https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
-- https://cloud-images.ubuntu.com/focal/current/focal3-server-cloudimg-amd64.img
+https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud-Base.latest.x86_64.qcow2
+https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
+https://cloud-images.ubuntu.com/focal/current/focal3-server-cloudimg-amd64.img
