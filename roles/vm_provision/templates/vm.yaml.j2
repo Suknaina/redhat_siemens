@@ -33,7 +33,7 @@ spec:
             userData: |
               #cloud-config
               hostname: {{ hostname }}
-              lock_passwd: false
+              preserve_hostname: false
               password: {{ cloud_init_password }}
               chpasswd: { expire: false }
               ssh_pwauth: True
