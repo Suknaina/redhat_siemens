@@ -14,6 +14,8 @@ def generate_hostname(location, os_family):
 
     if os_family.lower() == "windows":
         suffix = "wspr"
+    elif os_family.lower() == "linux":
+        suffix = "lspr"
     else:
         raise ValueError("Unsupported OS family")
 
