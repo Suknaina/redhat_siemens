@@ -32,6 +32,7 @@ spec:
           cloudInitNoCloud:
             userData: |
               #cloud-config
+              hostname: {{ hostname }}
               lock_passwd: false
               password: {{ cloud_init_password }}
               chpasswd: { expire: true }
