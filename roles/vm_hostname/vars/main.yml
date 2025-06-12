@@ -1,0 +1,9 @@
+---
+# vars file for vm_hostname
+location_prefix:
+  bangalore: "inblrpr"
+  pune: "inpunaa"
+
+os_suffix:
+  windows: "wspr"
+
