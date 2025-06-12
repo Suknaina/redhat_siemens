@@ -5,10 +5,6 @@
   register: hostname_output
 
 - name: Set hostname fact
-  set_fact:
+  set_stats:
     hostname: "{{ hostname_output.stdout }}"
-
-- name: Show generated hostname
-  debug:
-    msg: "Generated hostname is {{ hostname }}"
 
