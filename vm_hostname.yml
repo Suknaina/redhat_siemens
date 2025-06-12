@@ -1,5 +1,6 @@
 - name: Generate hostname using custom role
   hosts: 172.16.3.42
+  become: yes
   roles:
     - vm_hostname 
     - git_update
