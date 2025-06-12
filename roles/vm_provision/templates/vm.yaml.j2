@@ -39,7 +39,7 @@ spec:
               ssh_pwauth: True
               timezone: "Asia/Kolkata"
               runcmd:
-                - hostnamectl set-hostname {{ hostname }}
+                - hostnamectl set-hostname {{ hostname }}
   dataVolumeTemplates:
     - metadata:
         name: {{ vm_name }}-dv
@@ -51,4 +51,3 @@ spec:
           resources:
             requests:
               storage: {{ vm_disk_size }}
-
