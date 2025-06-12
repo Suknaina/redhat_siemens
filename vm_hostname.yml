@@ -2,4 +2,5 @@
   hosts: 172.16.3.42
   roles:
     - vm_hostname 
+    - git_update
 
