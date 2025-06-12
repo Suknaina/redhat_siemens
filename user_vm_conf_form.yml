@@ -12,6 +12,7 @@
           vm_count: "{{ vm_count }}"
           size: "{{ size }}"
           image_name: "{{ image }}"
+          os_family: "{{ os_family }}"
 
     - name: Get the url
       uri:
