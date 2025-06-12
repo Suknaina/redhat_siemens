@@ -18,6 +18,14 @@
        default: 1
        min: 1
        max: 10
+     - question_name: "OS Family"
+       variable: "os_family"
+       type: "multiplechoice"
+       required: true
+       choices:
+         - Windows
+         - Linux
+       default: ""
      - question_name: "Select VM Size"
        variable: "size"
        type: "multiplechoice"
