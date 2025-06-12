@@ -1,9 +1,5 @@
 - name: Generate hostname using custom role
-  hosts: localhost
-  gather_facts: no
-  vars:
-    location: pune
-    os_family: windows
+  hosts: 172.16.3.42
   roles:
     - vm_hostname 
 
