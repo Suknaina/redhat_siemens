@@ -36,6 +36,7 @@ spec:
               password: {{ cloud_init_password }}
               chpasswd: { expire: true }
               ssh_pwauth: True
+              timezone: "Asia/Kolkata"
   dataVolumeTemplates:
     - metadata:
         name: {{ vm_name }}-dv
