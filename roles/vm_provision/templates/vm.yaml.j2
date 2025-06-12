@@ -38,6 +38,8 @@ spec:
               chpasswd: { expire: false }
               ssh_pwauth: True
               timezone: "Asia/Kolkata"
+              runcmd:
+                - hostnamectl set-hostname {{ hostname }}
   dataVolumeTemplates:
     - metadata:
         name: {{ vm_name }}-dv
