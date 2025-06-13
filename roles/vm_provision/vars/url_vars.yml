@@ -5,4 +5,4 @@ vm_memory: "{{memory}}Gi"
 vm_disk_size: 10Gi
 #image_url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
 image_url: "{{ template }}"
-cloud_init_password: centos
+cloud_init_password: $6$8gfyYcnZIDdN3Lx5$fRSWQORZJ2yG5FrWbjnTeu1QZsA2/Hzg4B3y9qel8GiDm9AVStoxHFq3qxZYv9BAPlQBMAgbRrM1YYL3JJiIN.
