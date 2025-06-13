@@ -1,7 +1,8 @@
 ---
 # tasks file for vm_hostname
-- debug:
-    msg: "{{ os_family }}"
+#- debug:
+#    msg: "{{ os_family }}"
+
 - name: Run Python script to generate hostname
   script: "generate_hostname.py {{ location }} {{ os_family }}"
   register: hostname_output
