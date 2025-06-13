@@ -12,9 +12,9 @@ def generate_hostname(location, os_family):
        prefix = "inpunaa"
    else:
        raise ValueError(f"Unsupported location: {location}")
-   if os_family == "windows server":
+   if os_family == "windowsserver":
        suffix = "wspr"
-   elif os_family == "windows client":
+   elif os_family == "windowsclient":
        suffix = "wcpr"
    elif os_family == "linux":
        suffix = "lnpr"
