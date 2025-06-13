@@ -1,5 +1,5 @@
 - name: Apply KubeVirt VM manifest from template
   kubernetes.core.k8s:
     state: present
-    definition: "{{ lookup('template', 'vm.yaml.j2') }}"
+    definition: "{{ lookup('template', 'linux_vm_url_method.yaml.j2') }}"
 
