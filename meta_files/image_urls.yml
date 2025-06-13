@@ -3,5 +3,6 @@
 - jammy-server-cloudimg-amd64
 - focal-server-cloudimg-amd64
 - focal3-server-cloudimg-amd64
+- rhel-9
 - rhel-guest-image-7
 
