@@ -1,8 +1,8 @@
 - CentOS-7-x86_64-GenericCloud
-- Rocky-8-GenericCloud-Base
+- Rocky-8-GenericCloud-Base.latest.x86_64
 - jammy-server-cloudimg-amd64
 - focal-server-cloudimg-amd64
 - focal3-server-cloudimg-amd64
-- rhel-9
-- rhel-guest-image-7
+- rhel-9.2-x86_64-kvm
+- rhel-guest-image-7.0-20140930.0.x86_64
 
