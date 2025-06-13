@@ -5,17 +5,19 @@ import sys
 import os
 
 def generate_hostname(location, os_family):
-    if location.lower() == "bangalore":
+    if location.lower() == "bengaluru":
         prefix = "inblrpr"
     elif location.lower() == "pune":
         prefix = "inpunaa"
     else:
         raise ValueError("Unsupported location")
 
-    if os_family.lower() == "windows":
+    if os_family.lower() == "windows server":
         suffix = "wspr"
+    elif os_family.lower() == "windows client":
+        suffix = "wcpr"
     elif os_family.lower() == "linux":
-        suffix = "lspr"
+        suffix = "lnpr"
     else:
         raise ValueError("Unsupported OS family")
 
