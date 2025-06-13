@@ -24,7 +24,7 @@
       include_vars: url_vars.yml
       
     - name: Include tasks to create VM from url
-      include_tasks: url_method.yml
+      include_tasks: linux_vm_url_method.yml
       when: os_family == 'Linux'
       
   when: creation_type == 'url'
