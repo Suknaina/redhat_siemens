@@ -9,5 +9,5 @@
 - name: Set hostname fact
   set_stats:
     data:
-      hostname: "{{ hostname_output.stdout }}"
+      hostname: "{{ hostname_output.stdout | trim }}"
 
