@@ -32,13 +32,18 @@ spec:
           cloudInitNoCloud:
             userData: |
               #cloud-config
-              hostname: {{ hostname }}
-              preserve_hostname: false
-              password: {{ cloud_init_password }}
-              chpasswd: { expire: false }
-              ssh_pwauth: True
+              users:
+                - name: admin
+                  lock_passwd: false
+                  passwd: $6$8gfyYcnZIDdN3Lx5$fRSWQORZJ2yG5FrWbjnTeu1QZsA2/Hzg4B3y9qel8GiDm9AVStoxHFq3qxZYv9BAPlQBMAgbRrM1YYL3JJiIN.
+                  shell: /bin/bash
+                  sudo: ['ALL=(ALL) NOPASSWD:ALL']
+                  groups: [wheel]
               timezone: "Asia/Kolkata"
+              lock_passwd: false
+              ssh_pwauth: true
               runcmd:
+                - chage -d 0 admin
                 - hostnamectl set-hostname {{ hostname }}
   dataVolumeTemplates:
     - metadata:
