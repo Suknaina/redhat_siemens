@@ -20,9 +20,14 @@
     url_list: "{{ url_lists.content | from_yaml }}"
 
     
+#- name: Extract image names and store in list
+#  set_fact:
+#    image_names: "{{ image_names + [item.split('/')[-1].split('.')[0]] }}"
+#  loop: "{{ url_list }}"
+
 - name: Extract image names and store in list
   set_fact:
-    image_names: "{{ image_names + [item.split('/')[-1].split('.')[0]] }}"
+    image_names: "{{ image_names + [item.split('/')[-1].rsplit('.', 1)[0]] }}"
   loop: "{{ url_list }}"
 
 - name: Clear file before use
