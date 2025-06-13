@@ -23,7 +23,8 @@
        type: "multiplechoice"
        required: true
        choices:
-         - Windows
+         - Windows Server
+         - Windows Client
          - Linux
        default: ""
      - question_name: "Select VM Size"
