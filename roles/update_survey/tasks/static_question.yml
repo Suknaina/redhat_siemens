@@ -19,7 +19,7 @@
        min: 1
        max: 10
      - question_name: "OS Family"
-       variable: "os_family"
+       variable: "vm_os_family"
        type: "multiplechoice"
        required: true
        choices:
