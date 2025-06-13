@@ -5,7 +5,7 @@ import sys
 import os
 def generate_hostname(location, os_family):
    location = location.strip().lower()
-   os_family = os_family.strip().lower()
+   os_family = os_family.lower()
    if location == "bengaluru":
        prefix = "inblrpr"
    elif location == "pune":
