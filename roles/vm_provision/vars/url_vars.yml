@@ -1,4 +1,4 @@
-vm_name: {{ hostname }}
+vm_name: "{{ hostname }}"
 namespace: aap-poc
 vm_cpu_cores: "{{cpu_count}}"
 vm_memory: "{{memory}}Gi"
