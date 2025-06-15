@@ -1,2 +1,4 @@
 ---
 # tasks file for feasibility_check
+- name: Check Resource quota in namespace to create VM
+  include_tasks: check_resource_quotas.yml
