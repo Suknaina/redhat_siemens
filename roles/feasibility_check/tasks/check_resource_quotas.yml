@@ -54,7 +54,7 @@
 - name: Fail if requested resources exceed quota
   fail:
     msg: >-
-      ❌ Resource request exceeds quota.
+      Resource request exceeds quota.
       Requested: {{ cpu_count }} CPUs, {{ memory }}Gi memory.
       Available: {{ quota_available_cpu }} CPUs, {{ quota_available_memory_mi | round(2) }} Mi memory.
   when: >
@@ -62,6 +62,6 @@
     or
     ((memory | float) * 1024) > quota_available_memory_mi
 
-- name: ✅ Resources are within quota
+- name: Resources are within quota
   debug:
-    msg: "✅ Requested resources are within available quota."
+    msg: "Requested resources are within available quota."
