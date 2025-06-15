@@ -13,60 +13,55 @@
     msg: "No ResourceQuota found in namespace {{ namespace }}"
   when: quota_info.resources | length == 0
 
+# --- CPU Conversion ---
 - name: Parse and convert CPU values (supports 'm' unit)
   set_fact:
     quota_hard_cpu: >-
       {% set cpu = quota_info.resources[0].status.hard['limits.cpu'] %}
-      {% if cpu.endswith('m') %}
-        {{ (cpu[:-1] | float) / 1000 }}
-      {% else %}
-        {{ cpu | float }}
-      {% endif %}
+      {{ (cpu[:-1] | float / 1000) if cpu.endswith('m') else (cpu | float) }}
     quota_used_cpu: >-
       {% set cpu = quota_info.resources[0].status.used['limits.cpu'] %}
-      {% if cpu.endswith('m') %}
-        {{ (cpu[:-1] | float) / 1000 }}
-      {% else %}
-        {{ cpu | float }}
-      {% endif %}
+      {{ (cpu[:-1] | float / 1000) if cpu.endswith('m') else (cpu | float) }}
 
 - name: Calculate available CPU
   set_fact:
     quota_available_cpu: "{{ quota_hard_cpu - quota_used_cpu }}"
 
-- name: Parse and convert memory values to Mi
+# --- Memory Conversion ---
+- name: Convert memory to MiB
   set_fact:
     quota_available_memory_mi: >-
       {% set hard_mem = quota_info.resources[0].status.hard['limits.memory'] %}
       {% set used_mem = quota_info.resources[0].status.used['limits.memory'] %}
 
-      {% macro convert_to_mi(mem_str) %}
-        {% if mem_str.endswith('Gi') %}
-          {{ (mem_str[:-2] | float) * 1024 }}
-        {% elif mem_str.endswith('Mi') %}
-          {{ mem_str[:-2] | float }}
-        {% elif mem_str.endswith('G') %}
-          {{ (mem_str[:-1] | float) * 1024 }}
-        {% elif mem_str.endswith('M') %}
-          {{ (mem_str[:-1] | float) / 1.04858 }}
+      {% macro to_mib(mem) %}
+        {% if mem.endswith('Gi') %}
+          {{ (mem[:-2] | float) * 1024 }}
+        {% elif mem.endswith('Mi') %}
+          {{ mem[:-2] | float }}
+        {% elif mem.endswith('G') %}
+          {{ (mem[:-1] | float) * 1024 }}
+        {% elif mem.endswith('M') %}
+          {{ (mem[:-1] | float) / 1.048576 }}
         {% else %}
           0
         {% endif %}
       {% endmacro %}
 
-      {{ convert_to_mi(hard_mem) - convert_to_mi(used_mem) }}
+      {{ to_mib(hard_mem) - to_mib(used_mem) }}
 
+# --- Validation ---
 - name: Fail if requested resources exceed quota
   fail:
     msg: >-
-      Resource request exceeds quota.
+      ❌ Resource request exceeds quota.
       Requested: {{ cpu_count }} CPUs, {{ memory }}Gi memory.
-      Available: {{ quota_available_cpu }} CPUs, {{ quota_available_memory_mi }} Mi memory.
+      Available: {{ quota_available_cpu }} CPUs, {{ quota_available_memory_mi | round(2) }} Mi memory.
   when: >
-    (cpu_count | float) > (quota_available_cpu | float)
+    (cpu_count | float) > quota_available_cpu
     or
-    ((memory | float) * 1024) > (quota_available_memory_mi | float)
+    ((memory | float) * 1024) > quota_available_memory_mi
 
-- name: Debug - Resources are within quota
+- name: ✅ Resources are within quota
   debug:
-    msg: "Requested resources are within available quota."
+    msg: "✅ Requested resources are within available quota."
