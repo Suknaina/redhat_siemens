@@ -1,13 +1,18 @@
 - name: Include vars for namespace, cpu and memory vars
   include_vars: roles/vm_provision/vars/url_vars.yml
-  
+
 - name: Get ResourceQuota in the namespace
   kubernetes.core.k8s_info:
     api_version: v1
     kind: ResourceQuota
-    namespace:  "{{ namespace | trim }}"
+    namespace: "{{ namespace | trim }}"
   register: quota_info
-  
+
+- name: Fail if no ResourceQuota found
+  fail:
+    msg: "No ResourceQuota found in namespace {{ namespace }}"
+  when: quota_info.resources | length == 0
+
 - name: Set quota facts (cast to float)
   set_fact:
     quota_hard_cpu: "{{ quota_info.resources[0].status.hard['limits.cpu'] | float }}"
@@ -15,11 +20,11 @@
     quota_hard_memory: "{{ quota_info.resources[0].status.hard['limits.memory'] }}"
     quota_used_memory: "{{ quota_info.resources[0].status.used['limits.memory'] }}"
 
-- name: Set available cpu
+- name: Set available CPU
   set_fact:
     quota_available_cpu: "{{ quota_hard_cpu - quota_used_cpu }}"
 
-- name: Convert memory to Mi
+- name: Convert memory to Mi and calculate available memory
   set_fact:
     quota_available_memory_mi: >-
       {% set hard = quota_hard_memory[:-2] | float %}
@@ -32,7 +37,6 @@
       {% else %}
         {{ 0 }}
       {% endif %}
-    quota_available_cpu: "{{ quota_hard_cpu - quota_used_cpu }}"
 
 - name: Check resource feasibility
   fail:
