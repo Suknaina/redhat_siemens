@@ -1,3 +1,6 @@
+- name: Include vars for namespace, cpu and memory vars
+  include_vars: roles/vm_provision/vars/url_vars.yml
+  
 - name: Get ResourceQuota in the namespace
   kubernetes.core.k8s_info:
     api_version: v1
