@@ -8,30 +8,39 @@
     namespace:  "{{ namespace | trim }}"
   register: quota_info
 
-- name: Extract quota CPU and Memory
+- name: Set quota facts
   set_fact:
-    quota_cpu: "{{ quota_info.resources[0].status.hard['limits.cpu'] | default('0') }}"
-    quota_memory: "{{ quota_info.resources[0].status.hard['limits.memory'] | default('0') }}"
-  when: quota_info.resources | length > 0
+    quota_hard_cpu: "{{ quota_info.resources[0].status.hard['limits.cpu'] | float }}"
+    quota_used_cpu: "{{ quota_info.resources[0].status.used['limits.cpu'] | float }}"
+    quota_hard_memory: "{{ quota_info.resources[0].status.hard['limits.memory'] }}"
+    quota_used_memory: "{{ quota_info.resources[0].status.used['limits.memory'] }}"
 
-- name: Convert quota memory to Mi
+- name: Convert memory to Mi
   set_fact:
-    quota_memory_mi: >-
-      {% if 'Gi' in quota_memory %}
-        {{ (quota_memory[:-2] | float) * 1024 }}
-      {% elif 'Mi' in quota_memory %}
-        {{ quota_memory[:-2] | float }}
+    quota_available_memory_mi: >-
+      {% set hard = quota_hard_memory[:-2] | float %}
+      {% set used = quota_used_memory[:-2] | float %}
+      {% set unit = quota_hard_memory[-2:] %}
+      {% if unit == 'Gi' %}
+        {{ (hard - used) * 1024 }}
+      {% elif unit == 'Mi' %}
+        {{ hard - used }}
       {% else %}
-        {{ quota_memory | float }}
+        {{ 0 }}
       {% endif %}
+    quota_available_cpu: "{{ quota_hard_cpu - quota_used_cpu }}"
 
 - name: Check resource feasibility
   fail:
     msg: >-
       Resource request exceeds quota.
       Requested: {{ cpu_count }} CPUs, {{ memory }}Gi memory.
-      Quota allows: {{ quota_cpu }} CPUs, {{ quota_memory }} memory.
+      Available: {{ quota_available_cpu }} CPUs, {{ quota_available_memory_mi }} Mi memory.
   when: >
-    (cpu_count | float) > (quota_cpu | float)
+    (cpu_count | float) > quota_available_cpu
     or
-    (memory | float) * 1024 > quota_memory_mi
+    (memory | float) * 1024 > quota_available_memory_mi
+
+- name: Debug - Resources are within quota
+  debug:
+    msg: "Requested resources are within available quota."
