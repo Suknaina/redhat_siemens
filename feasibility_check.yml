@@ -1,0 +1,4 @@
+- name: Feasibility Check to create VMs
+  hosts: localhost
+  roles:
+    - feasibility_check
