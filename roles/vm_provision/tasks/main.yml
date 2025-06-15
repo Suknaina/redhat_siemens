@@ -1,12 +1,5 @@
 ---
 # tasks file for vm_provision
-- name: Get ResourceQuota in the namespace
-  kubernetes.core.k8s_info:
-    api_version: v1
-    kind: ResourceQuota
-    namespace: aap-poc
-  register: quota_info
-      
 - name: include cred file
   include_vars: admin_creds.yml
   
