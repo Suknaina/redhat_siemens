@@ -18,7 +18,7 @@
       
     - name: Include tasks to create VM from url
       include_tasks: linux_vm_url_method.yml
-      when: os_family == 'Linux'
+      when: vm_os_family == 'Linux'
       
   when: creation_type == 'url'
 
