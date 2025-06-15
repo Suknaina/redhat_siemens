@@ -1,5 +1,12 @@
 vm_name: "{{ hostname }}"
-namespace: aap-poc
+namespace:  >-
+  {% if business_group | lower == 'bg2' %}
+    siemensbg2
+  {% elif business_group | lower == 'bg1' %}
+    siemens
+  {% else %}
+    aap-poc
+  {% endif %}
 vm_cpu_cores: "{{cpu_count}}"
 vm_memory: "{{memory}}Gi"
 vm_disk_size: 10Gi
