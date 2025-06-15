@@ -12,9 +12,12 @@
   set_fact:
     quota_hard_cpu: "{{ quota_info.resources[0].status.hard['limits.cpu'] | float }}"
     quota_used_cpu: "{{ quota_info.resources[0].status.used['limits.cpu'] | float }}"
-    quota_available_cpu: "{{ quota_hard_cpu - quota_used_cpu }}"
     quota_hard_memory: "{{ quota_info.resources[0].status.hard['limits.memory'] }}"
     quota_used_memory: "{{ quota_info.resources[0].status.used['limits.memory'] }}"
+
+- name: Set available cpu
+  set_fact:
+    quota_available_cpu: "{{ quota_hard_cpu - quota_used_cpu }}"
 
 - name: Convert memory to Mi
   set_fact:
