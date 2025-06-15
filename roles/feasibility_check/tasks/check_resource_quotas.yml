@@ -37,9 +37,9 @@
       Requested: {{ cpu_count }} CPUs, {{ memory }}Gi memory.
       Available: {{ quota_available_cpu }} CPUs, {{ quota_available_memory_mi }} Mi memory.
   when: >
-    (cpu_count | float) > quota_available_cpu
+    (cpu_count | float) > (quota_available_cpu | float)
     or
-    (memory | float * 1024) > quota_available_memory_mi
+    ((memory | float) * 1024) > (quota_available_memory_mi | float)
 
 - name: Debug - Resources are within quota
   debug:
