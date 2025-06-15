@@ -13,22 +13,48 @@
     msg: "No ResourceQuota found in namespace {{ namespace }}"
   when: quota_info.resources | length == 0
 
-- name: Calculate available CPU and Memory (in Mi)
+- name: Parse and convert CPU values (supports 'm' unit)
   set_fact:
-    quota_available_cpu: "{{ (quota_info.resources[0].status.hard['limits.cpu'] | float) - (quota_info.resources[0].status.used['limits.cpu'] | float) }}"
+    quota_hard_cpu: >-
+      {% set cpu = quota_info.resources[0].status.hard['limits.cpu'] %}
+      {% if cpu.endswith('m') %}
+        {{ (cpu[:-1] | float) / 1000 }}
+      {% else %}
+        {{ cpu | float }}
+      {% endif %}
+    quota_used_cpu: >-
+      {% set cpu = quota_info.resources[0].status.used['limits.cpu'] %}
+      {% if cpu.endswith('m') %}
+        {{ (cpu[:-1] | float) / 1000 }}
+      {% else %}
+        {{ cpu | float }}
+      {% endif %}
+
+- name: Calculate available CPU
+  set_fact:
+    quota_available_cpu: "{{ quota_hard_cpu - quota_used_cpu }}"
+
+- name: Parse and convert memory values to Mi
+  set_fact:
     quota_available_memory_mi: >-
       {% set hard_mem = quota_info.resources[0].status.hard['limits.memory'] %}
       {% set used_mem = quota_info.resources[0].status.used['limits.memory'] %}
-      {% set hard_val = hard_mem[:-2] | float %}
-      {% set used_val = used_mem[:-2] | float %}
-      {% set unit = hard_mem[-2:] %}
-      {% if unit == 'Gi' %}
-        {{ (hard_val - used_val) * 1024 }}
-      {% elif unit == 'Mi' %}
-        {{ hard_val - used_val }}
-      {% else %}
-        0
-      {% endif %}
+
+      {% macro convert_to_mi(mem_str) %}
+        {% if mem_str.endswith('Gi') %}
+          {{ (mem_str[:-2] | float) * 1024 }}
+        {% elif mem_str.endswith('Mi') %}
+          {{ mem_str[:-2] | float }}
+        {% elif mem_str.endswith('G') %}
+          {{ (mem_str[:-1] | float) * 1024 }}
+        {% elif mem_str.endswith('M') %}
+          {{ (mem_str[:-1] | float) / 1.04858 }}
+        {% else %}
+          0
+        {% endif %}
+      {% endmacro %}
+
+      {{ convert_to_mi(hard_mem) - convert_to_mi(used_mem) }}
 
 - name: Fail if requested resources exceed quota
   fail:
