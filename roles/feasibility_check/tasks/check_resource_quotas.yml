@@ -13,41 +13,33 @@
     msg: "No ResourceQuota found in namespace {{ namespace }}"
   when: quota_info.resources | length == 0
 
-- name: Set quota facts (without casting here)
+- name: Calculate available CPU and Memory (in Mi)
   set_fact:
-    quota_hard_cpu: "{{ quota_info.resources[0].status.hard['limits.cpu'] }}"
-    quota_used_cpu: "{{ quota_info.resources[0].status.used['limits.cpu'] }}"
-    quota_hard_memory: "{{ quota_info.resources[0].status.hard['limits.memory'] }}"
-    quota_used_memory: "{{ quota_info.resources[0].status.used['limits.memory'] }}"
-
-- name: Set available CPU (cast to float during subtraction and after)
-  set_fact:
-    quota_available_cpu: "{{ ((quota_hard_cpu | float) - (quota_used_cpu | float)) | float }}"
-
-- name: Convert memory to Mi and calculate available memory (cast to float)
-  set_fact:
+    quota_available_cpu: "{{ (quota_info.resources[0].status.hard['limits.cpu'] | float) - (quota_info.resources[0].status.used['limits.cpu'] | float) }}"
     quota_available_memory_mi: >-
-      {% set hard = quota_hard_memory[:-2] | float %}
-      {% set used = quota_used_memory[:-2] | float %}
-      {% set unit = quota_hard_memory[-2:] %}
+      {% set hard_mem = quota_info.resources[0].status.hard['limits.memory'] %}
+      {% set used_mem = quota_info.resources[0].status.used['limits.memory'] %}
+      {% set hard_val = hard_mem[:-2] | float %}
+      {% set used_val = used_mem[:-2] | float %}
+      {% set unit = hard_mem[-2:] %}
       {% if unit == 'Gi' %}
-        {{ ((hard - used) * 1024) | float }}
+        {{ (hard_val - used_val) * 1024 }}
       {% elif unit == 'Mi' %}
-        {{ (hard - used) | float }}
+        {{ hard_val - used_val }}
       {% else %}
-        0.0
+        0
       {% endif %}
 
-- name: Check resource feasibility
+- name: Fail if requested resources exceed quota
   fail:
     msg: >-
       Resource request exceeds quota.
       Requested: {{ cpu_count }} CPUs, {{ memory }}Gi memory.
       Available: {{ quota_available_cpu }} CPUs, {{ quota_available_memory_mi }} Mi memory.
   when: >
-    (cpu_count | float) > (quota_available_cpu | float)
+    (cpu_count | float) > quota_available_cpu
     or
-    ((memory | float) * 1024) > (quota_available_memory_mi | float)
+    (memory | float * 1024) > quota_available_memory_mi
 
 - name: Debug - Resources are within quota
   debug:
