@@ -13,16 +13,16 @@
     msg: "No ResourceQuota found in namespace {{ namespace }}"
   when: quota_info.resources | length == 0
 
-- name: Set quota facts (cast to float)
+- name: Set quota facts (without casting here)
   set_fact:
-    quota_hard_cpu: "{{ quota_info.resources[0].status.hard['limits.cpu'] | float }}"
-    quota_used_cpu: "{{ quota_info.resources[0].status.used['limits.cpu'] | float }}"
+    quota_hard_cpu: "{{ quota_info.resources[0].status.hard['limits.cpu'] }}"
+    quota_used_cpu: "{{ quota_info.resources[0].status.used['limits.cpu'] }}"
     quota_hard_memory: "{{ quota_info.resources[0].status.hard['limits.memory'] }}"
     quota_used_memory: "{{ quota_info.resources[0].status.used['limits.memory'] }}"
 
-- name: Set available CPU
+- name: Set available CPU (cast to float during subtraction)
   set_fact:
-    quota_available_cpu: "{{ quota_hard_cpu - quota_used_cpu }}"
+    quota_available_cpu: "{{ (quota_hard_cpu | float) - (quota_used_cpu | float) }}"
 
 - name: Convert memory to Mi and calculate available memory
   set_fact:
@@ -35,7 +35,7 @@
       {% elif unit == 'Mi' %}
         {{ hard - used }}
       {% else %}
-        {{ 0 }}
+        0
       {% endif %}
 
 - name: Check resource feasibility
